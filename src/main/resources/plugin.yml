@@ -1,0 +1,11 @@
+name: FlowwSmoke
+version: '${project.version}'
+main: de.flowwindustries.flowwsmoke.FlowwSmoke
+api-version: 1.19
+prefix: FlowwSmoke
+authors: [ Kapitan_Floww ]
+description: Simple plugin to create fireplace-like smoke particles anywhere
+
+commands:
+  smoke:
+    description: Create new smoke
