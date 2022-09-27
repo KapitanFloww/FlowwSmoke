@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
-import static de.flowwindustries.essentials.EssentialsPlugin.PREFIX;
+import static de.flowwindustries.flowwsmoke.FlowwSmoke.PREFIX;
 
 /**
  * Utility class that provides methods to (safely) parse Strings to either an

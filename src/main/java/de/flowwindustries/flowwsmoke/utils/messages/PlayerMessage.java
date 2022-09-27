@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-import static de.flowwindustries.essentials.EssentialsPlugin.PREFIX;
+import static de.flowwindustries.flowwsmoke.FlowwSmoke.PREFIX;
 
 /**
  * Utility class to simplify sending of colored messages to a player.

@@ -1,4 +1,4 @@
-package de.flowwindustries.flowwsmoke.configuration;
+package de.flowwindustries.flowwsmoke.utils.configuration;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
