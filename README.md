@@ -6,7 +6,7 @@
 
 FlowwSmoke is a Java Minecraft/Spigot plugin for placing fireplace-like particle spawners anywhere.
 
-![](./smoke.gif)
+<img src="./smoke.gif" width="100%">
 
 ## Installation
 
