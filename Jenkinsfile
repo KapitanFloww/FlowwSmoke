@@ -1,22 +1,23 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven.3.8.1-adoptopenjdk-17'
-            args '-v /root/.m2:/root/.m2'
-        }
+    agent any
+    tools {
+        maven 'Maven 3.8.6'
+        jdk 'jdk17'
     }
     stages {
-        stage('Checkout') {
-            checkout scm
+        stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
+            }
         }
-        stage('Check Java') {
-            sh "java -version"
-        }
-        stage('Build') {
-            sh 'mvn -B -DskipTests clean package'
-        }
-        stage('Archive Artifacts') {
-            archiveArtifacts artifacts: '**/target/*.jar'
+
+        stage ('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
         }
     }
 }
