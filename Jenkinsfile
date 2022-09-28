@@ -15,6 +15,18 @@ pipeline {
             }
         }
 
+       stage ('Test') {
+           steps {
+               sh 'mvn clean verify'
+           }
+       }
+
+       stage ('Publish Tests') {
+            steps {
+                junit 'target/surefire-reports/TEST-de.flowwindustries.**.xml'
+            }
+       }
+
         stage ('Build') {
             steps {
                 sh 'mvn clean package'

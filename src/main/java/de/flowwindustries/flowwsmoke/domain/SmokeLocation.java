@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.bukkit.Location;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -29,5 +28,20 @@ public class SmokeLocation implements Serializable {
     /**
      * Geographical location in world.
      */
-    private Location location;
+    private String worldName;
+
+    /**
+     * X-Coordinate
+     */
+    private Double x;
+
+    /**
+     * Y-Coordinate
+     */
+    private Double y;
+
+    /**
+     * Z-Coordinate
+     */
+    private Double z;
 }

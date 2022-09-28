@@ -1,10 +1,10 @@
 package de.flowwindustries.flowwsmoke.service.impl;
 
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
+import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import lombok.extern.java.Log;
-import org.bukkit.Location;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,12 +29,15 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
     }
 
     @Override
-    public int addSmoke(Location location) {
+    public int addSmoke(SmokeLocationDTO smokeLocationDTO) {
         int currentId = counter++;
         smokeLocations.add(new SmokeLocation()
-                .withLocation(location)
+                .withWorldName(smokeLocationDTO.getWorldName())
+                .withX(smokeLocationDTO.getX())
+                .withY(smokeLocationDTO.getY())
+                .withZ(smokeLocationDTO.getZ())
                 .withId(currentId));
-        log.config("Added smoke location %s at %s".formatted(currentId, location));
+        log.config("Added smoke location %s at [%s , %s, %s]".formatted(currentId, smokeLocationDTO.getX(), smokeLocationDTO.getY(), smokeLocationDTO.getZ()));
 
         persistLocations();
 
@@ -67,10 +70,10 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
         if(location != null) {
             smokeLocations.remove(location);
             log.config("Delete smoke location %s".formatted(id));
-        }
 
-        // Persist locations
-        persistLocations();
+            // Persist locations
+            persistLocations();
+        }
     }
 
     @Override
@@ -89,7 +92,7 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
 
     private List<SmokeLocation> listForWorld(String worldName) {
         return smokeLocations.stream()
-                .filter(smokeLocation -> Objects.requireNonNull(smokeLocation.getLocation().getWorld()).getName().equals(worldName))
+                .filter(smokeLocation -> smokeLocation.getWorldName().equals(worldName))
                 .toList();
     }
 
