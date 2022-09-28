@@ -20,5 +20,10 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
+        stage ('Archive Artifacts') {
+            steps {
+                archiveArtifacts allowEmptyArchive: true, artifacts: './target/FlowwSmoke-*.jar'
+            }
+        }
     }
 }
