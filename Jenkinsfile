@@ -22,7 +22,7 @@ pipeline {
         }
         stage ('Archive Artifacts') {
             steps {
-                archiveArtifacts allowEmptyArchive: true, artifacts: './target/FlowwSmoke-*.jar'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'target/FlowwSmoke-*.jar'
             }
         }
     }
