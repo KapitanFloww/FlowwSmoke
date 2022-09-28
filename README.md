@@ -10,8 +10,12 @@ FlowwSmoke is a Java Minecraft/Spigot plugin for placing fireplace-like particle
 
 ## Installation
 
-Download the latest artifact from [GitHub Actions](https://github.com/KapitanFloww/FlowwSmoke/actions/workflows/maven.yml).
-Extract the zip-file, move the `FlowwSmoke-*.jar` to your servers `plugin` directory and start the server.
+### Build the plugin yourself
+Clone this repository using `git` and execute the following command inside the projects root folder:
+````shell
+mvn clean package
+````
+Then, simply copy the `FlowwSmoke-*.jar` from the `/target`-folder to your servers `plugins`-folder and start your server.
 
 ## Usage
 
