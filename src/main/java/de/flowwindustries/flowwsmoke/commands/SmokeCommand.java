@@ -1,5 +1,6 @@
 package de.flowwindustries.flowwsmoke.commands;
 
+import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import de.flowwindustries.flowwsmoke.utils.exceptions.InsufficientPermissionException;
 import de.flowwindustries.flowwsmoke.utils.messages.PlayerMessage;
@@ -100,7 +101,12 @@ public class SmokeCommand implements CommandExecutor {
         if(targetLocation.getWorld() == null) {
             throw new IllegalStateException("World must not be null");
         }
-        int id = smokeLocationService.addSmoke(targetLocation);
+        var dto = new SmokeLocationDTO()
+                .withWorldName(targetLocation.getWorld().getName())
+                .withX(targetLocation.getX())
+                .withY(targetLocation.getY())
+                .withZ(targetLocation.getZ());
+        int id = smokeLocationService.addSmoke(dto);
         PlayerMessage.success("Placed smoke (%s) at [%s, %s, %s]".formatted(id, targetLocation.getX(), targetLocation.getY(), targetLocation.getZ()), player);
     }
 
@@ -118,8 +124,7 @@ public class SmokeCommand implements CommandExecutor {
             PlayerMessage.info("Listing all smokes in world %s:".formatted(worldName), player);
         }
         smokeLocationService.getAll(worldName).forEach(smokeLocation -> {
-            var location = smokeLocation.getLocation();
-            PlayerMessage.info("Smoke (%s) - at [%s, %s, %s]".formatted(smokeLocation.getId(), location.getX(), location.getY(), location.getZ()), player);
+            PlayerMessage.info("Smoke (%s) - at [%s, %s, %s]".formatted(smokeLocation.getId(), smokeLocation.getX(), smokeLocation.getY(), smokeLocation.getZ()), player);
         });
     }
 
