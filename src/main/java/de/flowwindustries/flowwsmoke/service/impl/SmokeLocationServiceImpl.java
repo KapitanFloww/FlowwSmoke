@@ -71,7 +71,6 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
             smokeLocations.remove(location);
             log.config("Delete smoke location %s".formatted(id));
 
-            // Persist locations
             persistLocations();
         }
     }
@@ -81,11 +80,11 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
         if(worldName == null) {
             smokeLocations.clear();
             log.config("Deleting all smoke locations");
-            return;
+        } else {
+            List<SmokeLocation> temp = listForWorld(worldName);
+            smokeLocations.removeAll(temp);
+            log.config( "Deleted all smoke locations in world %s".formatted(worldName));
         }
-        List<SmokeLocation> temp = listForWorld(worldName);
-        smokeLocations.removeAll(temp);
-        log.config( "Deleted all smoke locations in world %s".formatted(worldName));
 
         persistLocations();
     }

@@ -5,8 +5,6 @@ import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import de.flowwindustries.flowwsmoke.utils.exceptions.InsufficientPermissionException;
 import de.flowwindustries.flowwsmoke.utils.messages.PlayerMessage;
 import lombok.extern.java.Log;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,13 +18,21 @@ import java.util.Objects;
  * Smoke Command to create small smokers.
  * /smoke - create new smoke
  * /smoke list [world] - list all smokes
- * /smoke remove (id / [world]) - remove smoke with id or all smokes
+ * /smoke remove (id) - remove smoke with id or all smokes
+ * /smoke remove all [world] - remove all smokes
  */
 @Log
 public class SmokeCommand implements CommandExecutor {
 
-    private static final String INVALID_ARGUMENTS = "Invalid arguments at index: %s";
-    private static final String INVALID_ARGUMENTS_LENGTH = "Invalid argument length: %s";
+    public static final String INVALID_ARGUMENTS = "Invalid arguments at index";
+    public static final String INVALID_ARGUMENTS_LENGTH = "Invalid argument length";
+
+    public static final String MSG_HELP_TITLE = "-- Smoke Help --";
+    public static final String MSG_HELP_1 = "/smoke - create new smoke at target location";
+    public static final String MSG_HELP_2 = "/smoke list [world] - list all smokes [in world]";
+    public static final String MSG_HELP_3 = "/smoke remove (id) - remove smoke with id";
+    public static final String MSG_HELP_4 = "/smoke remove all [world] - remove all smokes [in world]";
+    public static final String MSG_HELP_5 = "-- [] - optional args, () - required args --";
 
     private final SmokeLocationService smokeLocationService;
     private final String permission;
@@ -47,8 +53,10 @@ public class SmokeCommand implements CommandExecutor {
             } catch (Exception ex) {
                 PlayerMessage.warn(ex.getMessage(), player);
             }
+        } else {
+            return consoleCommand(args);
         }
-        return consoleCommand(args);
+        return false;
     }
 
     private boolean playerCommand(Player player, String[] args) {
@@ -58,8 +66,7 @@ public class SmokeCommand implements CommandExecutor {
                 switch (args[0].toLowerCase(Locale.getDefault())) {
                     case "help" -> executeHelp(player); // smoke help
                     case "list" -> executeListAll(player, null); // smoke list
-                    case "remove" -> executeRemoveAll(player, null); // smoke remove
-                    default -> throw new IllegalArgumentException(INVALID_ARGUMENTS.formatted(0));
+                    default -> throw new IllegalArgumentException(INVALID_ARGUMENTS);
                 }
             }
             case 2 -> {
@@ -70,22 +77,29 @@ public class SmokeCommand implements CommandExecutor {
                             // Try delete by id - if args[1] is integer
                             int id = Integer.parseInt(args[1]);
                             executeRemoveSmoke(player, id); // smoke remove [id]
-
                         } catch (NumberFormatException ex) {
-                            // Else delete all by world
-                            executeRemoveAll(player, args[1]); // smoke remove [world]
+                            if(!args[1].equalsIgnoreCase("all")) {
+                                throw new IllegalArgumentException(INVALID_ARGUMENTS);
+                            }
+                            executeRemoveAll(player, null); // smoke remove all
                         }
                     }
-                    default -> throw new IllegalArgumentException(INVALID_ARGUMENTS.formatted(0));
+                    default -> throw new IllegalArgumentException(INVALID_ARGUMENTS);
                 }
             }
-            default -> throw new IllegalArgumentException(INVALID_ARGUMENTS_LENGTH.formatted(args.length));
+            case 3 -> {
+                if(!(args[0].equalsIgnoreCase("remove") && args[1].equalsIgnoreCase("all"))) {
+                    throw new IllegalArgumentException(INVALID_ARGUMENTS);
+                }
+                executeRemoveAll(player, args[2]); // smoke remove all <world>
+            }
+            default -> throw new IllegalArgumentException(INVALID_ARGUMENTS_LENGTH);
         }
-        return true;
+        return true; //remove all <world>
     }
 
     private boolean consoleCommand(String[] args) {
-        Bukkit.getConsoleSender().sendMessage("Sorry. Command can only be used in-game");
+        log.info("Sorry. Command can only be used in-game");
         return false;
     }
 
@@ -94,27 +108,27 @@ public class SmokeCommand implements CommandExecutor {
         if(targetBlock == null) {
             throw new IllegalArgumentException("Must be looking at a block close-by");
         }
-        int x = targetBlock.getX();
-        int y = targetBlock.getY();
-        int z = targetBlock.getZ();
-        Location targetLocation = new Location(targetBlock.getWorld(), (x+0.5d), (y+0.5d), (z+0.5d));
-        if(targetLocation.getWorld() == null) {
-            throw new IllegalStateException("World must not be null");
-        }
+        double x = targetBlock.getX() + 0.5d;
+        double y = targetBlock.getY() + 0.5d;
+        double z = targetBlock.getZ() + 0.5d;
+        String worldName = targetBlock.getWorld().getName();
+
         var dto = new SmokeLocationDTO()
-                .withWorldName(targetLocation.getWorld().getName())
-                .withX(targetLocation.getX())
-                .withY(targetLocation.getY())
-                .withZ(targetLocation.getZ());
+                .withWorldName(worldName)
+                .withX(x)
+                .withY(y)
+                .withZ(z);
         int id = smokeLocationService.addSmoke(dto);
-        PlayerMessage.success("Placed smoke (%s) at [%s, %s, %s]".formatted(id, targetLocation.getX(), targetLocation.getY(), targetLocation.getZ()), player);
+        PlayerMessage.success("Placed smoke (%s) at [%s, %s, %s]".formatted(id, x, y, z), player);
     }
 
     private void executeHelp(Player player) {
-        PlayerMessage.info("-- Smoke Help --", player);
-        PlayerMessage.info("/smoke - create new smoke at target location", player);
-        PlayerMessage.info("/smoke list [world] - list all smokes [in world]", player);
-        PlayerMessage.info("/smoke remove (id / [world]) - remove smoke with id or all smokes [in world]", player);
+        PlayerMessage.info(MSG_HELP_TITLE, player);
+        PlayerMessage.info(MSG_HELP_1, player);
+        PlayerMessage.info(MSG_HELP_2, player);
+        PlayerMessage.info(MSG_HELP_3, player);
+        PlayerMessage.info(MSG_HELP_4, player);
+        PlayerMessage.info(MSG_HELP_5, player);
     }
 
     private void executeListAll(Player player, String worldName) {
