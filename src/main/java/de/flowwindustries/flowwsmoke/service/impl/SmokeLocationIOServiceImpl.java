@@ -44,6 +44,7 @@ public class SmokeLocationIOServiceImpl implements SmokeLocationIOService {
                     BukkitObjectOutputStream out = new BukkitObjectOutputStream(new GZIPOutputStream(new FileOutputStream(dataFile)));
                     out.writeObject(locations);
                     out.close();
+                    log.info("Successfully persisted smoke locations");
                 } catch (IOException ex) {
                     log.warning("Error while persisting file: " + ex.getMessage());
                 }
