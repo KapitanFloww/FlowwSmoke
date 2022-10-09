@@ -37,6 +37,7 @@ The following commands are available in-game:
 | `/smoke`                    | `floww.smoke` | Place a new smoke location at your current target block |
 | `/smoke help`               | `floww.smoke` | Open a help page                                        |
 | `/smoke list [world]`       | `floww.smoke` | List all smokes [of given world]                        |
+| `/smoke remove`             | `floww.smoke` | Remove smoke location at your current target block      |
 | `/smoke remove (id)`        | `floww.smoke` | Remove smoke location with given id                     |
 | `/smoke remove all [world]` | `floww.smoke` | Remove all smokes locations [of given world]            |
 
