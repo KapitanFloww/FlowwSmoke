@@ -63,7 +63,7 @@ public class SmokeCommandTest {
         // WHEN
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
         // THEN
-        Stream.of(MSG_HELP_TITLE, MSG_HELP_1, MSG_HELP_2, MSG_HELP_3, MSG_HELP_4, MSG_HELP_5)
+        Stream.of(MSG_HELP_TITLE, MSG_HELP_1, MSG_HELP_2, MSG_HELP_3, MSG_HELP_4, MSG_HELP_5, MSG_HELP_5)
                 .forEach(msg -> verify(playerMock, times(1)).sendMessage(contains(msg)));
     }
 

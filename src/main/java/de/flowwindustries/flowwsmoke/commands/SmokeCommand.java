@@ -28,11 +28,12 @@ public class SmokeCommand implements CommandExecutor {
     public static final String INVALID_ARGUMENTS_LENGTH = "Invalid argument length";
 
     public static final String MSG_HELP_TITLE = "-- Smoke Help --";
-    public static final String MSG_HELP_1 = "/smoke - create new smoke at target location";
+    public static final String MSG_HELP_1 = "/smoke - create new smoke at target block location";
     public static final String MSG_HELP_2 = "/smoke list [world] - list all smokes [in world]";
-    public static final String MSG_HELP_3 = "/smoke remove (id) - remove smoke with id";
-    public static final String MSG_HELP_4 = "/smoke remove all [world] - remove all smokes [in world]";
-    public static final String MSG_HELP_5 = "-- [] - optional args, () - required args --";
+    public static final String MSG_HELP_3 = "/smoke remove - remove smoke at target block location";
+    public static final String MSG_HELP_4 = "/smoke remove (id) - remove smoke with id";
+    public static final String MSG_HELP_5 = "/smoke remove all [world] - remove all smokes [in world]";
+    public static final String MSG_HELP_6 = "-- [] - optional args, () - required args --";
 
     private final SmokeLocationService smokeLocationService;
     private final String permission;
@@ -66,6 +67,7 @@ public class SmokeCommand implements CommandExecutor {
                 switch (args[0].toLowerCase(Locale.getDefault())) {
                     case "help" -> executeHelp(player); // smoke help
                     case "list" -> executeListAll(player, null); // smoke list
+                    case "remove" -> executeRemoveSmokeTarget(player);
                     default -> throw new IllegalArgumentException(INVALID_ARGUMENTS);
                 }
             }
@@ -104,22 +106,9 @@ public class SmokeCommand implements CommandExecutor {
     }
 
     private void executeSmokeCreation(Player player) {
-        Block targetBlock = player.getTargetBlockExact(5);
-        if(targetBlock == null) {
-            throw new IllegalArgumentException("Must be looking at a block close-by");
-        }
-        double x = targetBlock.getX() + 0.5d;
-        double y = targetBlock.getY() + 0.5d;
-        double z = targetBlock.getZ() + 0.5d;
-        String worldName = targetBlock.getWorld().getName();
-
-        var dto = new SmokeLocationDTO()
-                .withWorldName(worldName)
-                .withX(x)
-                .withY(y)
-                .withZ(z);
+        SmokeLocationDTO dto = getTargetLocationDto(player);
         int id = smokeLocationService.addSmoke(dto);
-        PlayerMessage.success("Placed smoke (%s) at [%s, %s, %s]".formatted(id, x, y, z), player);
+        PlayerMessage.success("Placed smoke (%s) at [%s, %s, %s]".formatted(id, dto.getX(), dto.getY(), dto.getZ()), player);
     }
 
     private void executeHelp(Player player) {
@@ -129,6 +118,7 @@ public class SmokeCommand implements CommandExecutor {
         PlayerMessage.info(MSG_HELP_3, player);
         PlayerMessage.info(MSG_HELP_4, player);
         PlayerMessage.info(MSG_HELP_5, player);
+        PlayerMessage.info(MSG_HELP_6, player);
     }
 
     private void executeListAll(Player player, String worldName) {
@@ -147,6 +137,11 @@ public class SmokeCommand implements CommandExecutor {
         PlayerMessage.success("Deleted smoke: %s".formatted(id), player);
     }
 
+    private void executeRemoveSmokeTarget(Player player) {
+        SmokeLocationDTO dto = getTargetLocationDto(player);
+        smokeLocationService.getSmokeAtDtoSafe(dto).forEach(smokeLocation -> executeRemoveSmoke(player, smokeLocation.getId()));
+    }
+
     private void executeRemoveAll(Player player, String worldName) {
         smokeLocationService.deleteAll(worldName);
         if(worldName == null) {
@@ -154,5 +149,22 @@ public class SmokeCommand implements CommandExecutor {
         } else {
             PlayerMessage.success("Deleted all smokes in world %s".formatted(worldName), player);
         }
+    }
+
+    private static SmokeLocationDTO getTargetLocationDto(Player player) {
+        Block targetBlock = player.getTargetBlockExact(5);
+        if(targetBlock == null) {
+            throw new IllegalArgumentException("Must be looking at a block close-by (5 blocks)");
+        }
+        double x = targetBlock.getX() + 0.5d;
+        double y = targetBlock.getY() + 0.5d;
+        double z = targetBlock.getZ() + 0.5d;
+        String worldName = targetBlock.getWorld().getName();
+
+        return new SmokeLocationDTO()
+                .withWorldName(worldName)
+                .withX(x)
+                .withY(y)
+                .withZ(z);
     }
 }

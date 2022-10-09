@@ -26,6 +26,15 @@ public interface SmokeLocationService {
     SmokeLocation getSmoke(int id) throws IllegalStateException;
 
     /**
+     * Try to get the {@link SmokeLocation} at this specific target location ({@link SmokeLocationDTO}.
+     * If more than {@link SmokeLocation} at the DTO-location is found, then the first found will be removed.
+     * @param dto - the DTO-location to check
+     * @return a {@link List} with all matching {@link SmokeLocation}s, never {@code null}
+     * @throws IllegalArgumentException if the DTO-location cannot be parsed to an existing {@link SmokeLocation}
+     */
+    List<SmokeLocation> getSmokeAtDtoSafe(SmokeLocationDTO dto) throws IllegalArgumentException, IllegalStateException;
+
+    /**
      * Get all smoke locations.
      * @param worldName - if {@code null} return all registered locations, else return locations of the given world
      * @return a {@link List} containing all {@link SmokeLocation}s

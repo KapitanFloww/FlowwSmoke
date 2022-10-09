@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Log
 public class SmokeLocationServiceImpl implements SmokeLocationService {
 
+    public static final String LOCATION_DTO_NOT_FOUND = "Location is not a smoke location!";
     private int counter;
     private final List<SmokeLocation> smokeLocations;
 
@@ -54,6 +55,17 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
             throw new IllegalStateException("Ambiguous smoke locations for id %s found".formatted(id));
         }
         return results.get(0);
+    }
+
+    @Override
+    public List<SmokeLocation> getSmokeAtDtoSafe(SmokeLocationDTO dto) throws IllegalArgumentException {
+        var results = smokeLocations.stream()
+                .filter(it -> it.getX().equals(dto.getX()) && it.getY().equals(dto.getY()) && it.getZ().equals(dto.getZ()) && it.getWorldName().equals(dto.getWorldName()))
+                .toList();
+        if(results.size() == 0) {
+            throw new IllegalArgumentException(LOCATION_DTO_NOT_FOUND);
+        }
+        return results;
     }
 
     @Override

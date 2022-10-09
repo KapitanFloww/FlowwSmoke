@@ -5,7 +5,9 @@ import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationServiceImpl;
 import org.junit.jupiter.api.Test;
 
+import static de.flowwindustries.flowwsmoke.service.impl.SmokeLocationServiceImpl.LOCATION_DTO_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
@@ -90,6 +92,46 @@ public class SmokeLocationServiceImplTest {
         SmokeLocation smokeLocation = smokeLocationService.getSmoke(Integer.MIN_VALUE); // not existing
         // THEN
         assertThat(smokeLocation).isNull();
+    }
+
+    @Test
+    void verifyGetAtLocationDTO() {
+        // GIVEN
+        var dto = getDummyDTO(DUMMY_WORLD);
+        int id = smokeLocationService.addSmoke(dto);
+        // WHEN
+        var results = smokeLocationService.getSmokeAtDtoSafe(dto);
+        // THEN
+        assertThat(results).isNotNull();
+        assertThat(results).hasSize(1);
+        SmokeLocation smokeLocation = results.get(0);
+        assertThat(smokeLocation.getId()).isEqualTo(id);
+        assertThat(smokeLocation.getX()).isEqualTo(dto.getX());
+        assertThat(smokeLocation.getY()).isEqualTo(dto.getY());
+        assertThat(smokeLocation.getZ()).isEqualTo(dto.getZ());
+        assertThat(smokeLocation.getWorldName()).isEqualTo(dto.getWorldName());
+    }
+
+    @Test
+    void verifyGetAtLocationDTONonExistingSmoke() {
+        // GIVEN WHEN THEN
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> smokeLocationService.getSmokeAtDtoSafe(new SmokeLocationDTO("non", 100.0d, 100.0d, 100.0d)))
+                .withMessageContaining(LOCATION_DTO_NOT_FOUND);
+    }
+
+    @Test
+    void verifyGetAtLocationDTOReturnsAll() {
+        // GIVEN
+        int id1 = smokeLocationService.addSmoke(getDummyDTO(DUMMY_WORLD));
+        int id2 = smokeLocationService.addSmoke(getDummyDTO(DUMMY_WORLD));
+        // WHEN
+        var results = smokeLocationService.getSmokeAtDtoSafe(getDummyDTO(DUMMY_WORLD));
+        // THEN
+        assertThat(results).isNotNull();
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0).getId()).isEqualTo(id1);
+        assertThat(results.get(1).getId()).isEqualTo(id2);
     }
 
     @Test
