@@ -41,9 +41,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: 'test-results'
+          path: test-results
+        
       - name: Create Test Report
         uses: dorny/test-reporter@v1
         with:
-          name: Backend Tests               
-          path: 'target/surefire-reports/*.xml'              
+          name: Unit Tests               
+          path: 'test-results/*.xml'              
           reporter: java-junit
