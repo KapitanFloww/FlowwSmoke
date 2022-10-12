@@ -9,7 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>FlowwSmoke</name>
+    <name>flowwSmoke</name>
     <description>Simple plugin to create fireplace-like smoke particles anywhere</description>
 
     <properties>
