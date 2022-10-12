@@ -18,6 +18,12 @@
         <lombok.version>1.18.24</lombok.version>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+        </repository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>spigotmc-repo</id>
