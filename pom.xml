@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.flowwindustries</groupId>
-    <artifactId>FlowwSmoke</artifactId>
+    <artifactId>floww-smoke</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>flowwSmoke</name>
+    <name>FlowwSmoke</name>
     <description>Simple plugin to create fireplace-like smoke particles anywhere</description>
 
     <properties>
