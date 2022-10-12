@@ -45,5 +45,5 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Backend Tests               
-          path: '*.xml'              
+          path: 'target/surefire-reports/*.xml'              
           reporter: java-junit
