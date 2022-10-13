@@ -18,10 +18,13 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import static de.flowwindustries.flowwsmoke.utils.configuration.DefaultConfiguration.PREFIX_KEY;
+
 @Log
 public final class FlowwSmoke extends JavaPlugin {
 
-    public static final String PREFIX = "§7[§aFloww§4Smoke§7] ";
+    public static String pluginPrefix;
+    private static final String DATA_FILE_PATH = "plugins/FlowwSmoke/smoke-locations.dat";
     private static final String SMOKE_PERMISSION = "floww.smoke";
     private static final Random RANDOM = new Random();
 
@@ -38,6 +41,8 @@ public final class FlowwSmoke extends JavaPlugin {
         instance = this;
 
         setupConfig();
+        pluginPrefix = getConfiguration().get(PREFIX_KEY) + " ";
+
         setupServices();
         setupCommands();
 
@@ -45,7 +50,7 @@ public final class FlowwSmoke extends JavaPlugin {
         scheduleSmokeTask();
 
         String pluginVersion = instance.getDescription().getVersion();
-        log.info(PREFIX + "Initialization complete. Running version: " + pluginVersion);
+        log.info("Initialization complete. Running version: " + pluginVersion);
     }
 
     @Override
@@ -58,13 +63,11 @@ public final class FlowwSmoke extends JavaPlugin {
         instance.saveConfig();
     }
 
-    private final Consumer<Runnable> persistTaskExecutor = runnable -> {
-        Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
-    };
+    private final Consumer<Runnable> persistTaskExecutor =
+            runnable -> Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
 
     private void setupServices() {
-        String dataFilePath = "plugins/FlowwSmoke/smoke-locations.dat";
-        this.smokeLocationService = new SmokeLocationServiceImpl(new SmokeLocationIOServiceImpl(dataFilePath, persistTaskExecutor));
+        this.smokeLocationService = new SmokeLocationServiceImpl(new SmokeLocationIOServiceImpl(DATA_FILE_PATH, persistTaskExecutor));
     }
 
     private void setupCommands() {

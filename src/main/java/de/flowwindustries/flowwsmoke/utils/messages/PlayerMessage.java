@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-import static de.flowwindustries.flowwsmoke.FlowwSmoke.PREFIX;
+import static de.flowwindustries.flowwsmoke.FlowwSmoke.pluginPrefix;
 
 /**
  * Utility class to simplify sending of colored messages to a player.
@@ -49,6 +49,6 @@ public class PlayerMessage {
     }
 
     private static void sendMessageIntern(ChatColor chatColor, String message, Player... players) {
-        Arrays.stream(players).forEach(player -> player.sendMessage(String.format("%s%s%s", PREFIX, chatColor, message)));
+        Arrays.stream(players).forEach(player -> player.sendMessage(String.format("%s%s%s", pluginPrefix, chatColor, message)));
     }
 }

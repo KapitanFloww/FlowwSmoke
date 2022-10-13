@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.entity.Player;
 
-import static de.flowwindustries.flowwsmoke.FlowwSmoke.PREFIX;
+import static de.flowwindustries.flowwsmoke.FlowwSmoke.pluginPrefix;
 
 /**
  * {@link RuntimeException} to handle insufficient permissions.
@@ -26,10 +26,10 @@ public class InsufficientPermissionException extends Exception {
     public InsufficientPermissionException(Player sender, String permission) {
         String insufficientPermissions = FlowwSmoke.getInstance().getConfiguration().getString(CONFIG_KEY);
         if(insufficientPermissions == null) {
-            log.warning(PREFIX + CONFIGURATION_KEY_MISSING + CONFIG_KEY);
+            log.warning(pluginPrefix + CONFIGURATION_KEY_MISSING + CONFIG_KEY);
             return;
         }
         this.message = insufficientPermissions;
-        log.warning(String.format("%sPlayer %s tried to use a command without permission: %s", PREFIX, sender.getName(), permission));
+        log.warning(String.format("%sPlayer %s tried to use a command without permission: %s", pluginPrefix, sender.getName(), permission));
     }
 }

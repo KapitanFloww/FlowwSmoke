@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
-import static de.flowwindustries.flowwsmoke.FlowwSmoke.PREFIX;
+import static de.flowwindustries.flowwsmoke.FlowwSmoke.pluginPrefix;
 
 /**
  * Utility class that provides methods to (safely) parse Strings to either an
@@ -36,7 +36,7 @@ public class SpigotStringParser {
             throw new IllegalArgumentException(PARAMETER_NULL);
         }
 
-        log.config(PREFIX + "Trying to parse player: " + playerName);
+        log.config(pluginPrefix + "Trying to parse player: " + playerName);
         Optional<Player> optionalPlayer = Optional.ofNullable(Bukkit.getPlayer(playerName));
         return optionalPlayer.orElseThrow(() -> new IllegalArgumentException(String.format("%s: %s", PARSE_ERROR, playerName)));
     }
@@ -52,7 +52,7 @@ public class SpigotStringParser {
             throw new IllegalArgumentException(PARAMETER_NULL);
         }
 
-        log.config(PREFIX + "Trying to parse world: " + worldName);
+        log.config(pluginPrefix + "Trying to parse world: " + worldName);
         Optional<World> optionalWorld = Optional.ofNullable(Bukkit.getWorld(worldName));
         return optionalWorld.orElseThrow(() -> new IllegalArgumentException(String.format("%s: %s", PARSE_ERROR, worldName)));
     }
@@ -68,7 +68,7 @@ public class SpigotStringParser {
             throw new IllegalArgumentException(PARAMETER_NULL);
         }
 
-        log.config(PREFIX + "Trying to parse integer: " + integerString);
+        log.config(pluginPrefix + "Trying to parse integer: " + integerString);
         try {
             return Integer.parseInt(integerString);
         } catch (NumberFormatException ex) {
@@ -87,7 +87,7 @@ public class SpigotStringParser {
             throw new IllegalArgumentException(PARAMETER_NULL);
         }
 
-        log.config(PREFIX + "Trying to parse double: " + doubleString);
+        log.config(pluginPrefix + "Trying to parse double: " + doubleString);
         try {
             return Double.parseDouble(doubleString);
         } catch (NumberFormatException ex) {
@@ -106,7 +106,7 @@ public class SpigotStringParser {
             throw new IllegalArgumentException(PARAMETER_NULL);
         }
 
-        log.config(PREFIX + "Trying to parse float: " + floatString);
+        log.config(pluginPrefix + "Trying to parse float: " + floatString);
         try {
             return Float.parseFloat(floatString);
         } catch (NumberFormatException ex) {
