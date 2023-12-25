@@ -1,0 +1,12 @@
+######################################################
+#                                                    #
+#          Default FlowwSmoke Configuration          #
+#                                                    #
+######################################################
+# Change according to your needs
+
+# Specifies the ingame-prefix of messages sent by this plugin
+prefix: "§7[§aFloww§4Smoke§7]"
+
+messages:
+  insufficient-permission: Sorry, you don't have permission to execute this command
