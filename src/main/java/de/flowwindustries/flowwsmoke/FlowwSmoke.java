@@ -4,44 +4,47 @@ import de.flowwindustries.flowwsmoke.commands.SmokeCommand;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationIOServiceImpl;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationServiceImpl;
-import de.flowwindustries.flowwsmoke.utils.configuration.DefaultConfiguration;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import static de.flowwindustries.flowwsmoke.utils.configuration.DefaultConfiguration.PREFIX_KEY;
 
 @Log
 public final class FlowwSmoke extends JavaPlugin {
 
     public static String pluginPrefix;
+    public static String messagesInsufficientPermissions;
+
     private static final String DATA_FILE_PATH = "plugins/FlowwSmoke/smoke-locations.dat";
     private static final String SMOKE_PERMISSION = "floww.smoke";
     private static final Random RANDOM = new Random();
 
     @Getter
     private static FlowwSmoke instance;
-
     @Getter
-    private FileConfiguration configuration;
+    private SmokeConfiguration configuration;
 
     private SmokeLocationService smokeLocationService;
 
     @Override
     public void onEnable() {
-        instance = this;
+        // Always save default configuration if not exists
+        saveDefaultConfig();
 
-        setupConfig();
-        pluginPrefix = getConfiguration().get(PREFIX_KEY) + " ";
+        // Load configuration
+        configuration = new SmokeConfiguration(getConfig());
+        pluginPrefix = configuration.getPrefix();
+        messagesInsufficientPermissions = configuration.getInsufficientPermissionsMessage();
+
+        instance = this;
 
         setupServices();
         setupCommands();
@@ -55,12 +58,6 @@ public final class FlowwSmoke extends JavaPlugin {
 
     @Override
     public void onDisable() {
-    }
-
-    private void setupConfig() {
-        this.configuration = getConfig();
-        DefaultConfiguration.setupDefaultConfiguration(configuration);
-        instance.saveConfig();
     }
 
     private final Consumer<Runnable> persistTaskExecutor =

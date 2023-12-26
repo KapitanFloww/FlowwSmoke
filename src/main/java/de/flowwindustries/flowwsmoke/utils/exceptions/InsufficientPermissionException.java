@@ -24,7 +24,7 @@ public class InsufficientPermissionException extends Exception {
      * @param sender the {@link Player} that tried to send the command with insufficient permissions
      */
     public InsufficientPermissionException(Player sender, String permission) {
-        String insufficientPermissions = FlowwSmoke.getInstance().getConfiguration().getString(CONFIG_KEY);
+        String insufficientPermissions = FlowwSmoke.getInstance().getConfiguration().getInsufficientPermissionsMessage();
         if(insufficientPermissions == null) {
             log.warning(pluginPrefix + CONFIGURATION_KEY_MISSING + CONFIG_KEY);
             return;
