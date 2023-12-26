@@ -1,8 +1,8 @@
 package de.flowwindustries.flowwsmoke.commands;
 
+import de.flowwindustries.flowwsmoke.FlowwSmoke;
 import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
-import de.flowwindustries.flowwsmoke.utils.exceptions.InsufficientPermissionException;
 import de.flowwindustries.flowwsmoke.utils.messages.PlayerMessage;
 import lombok.extern.java.Log;
 import org.bukkit.block.Block;
@@ -47,7 +47,7 @@ public class SmokeCommand implements CommandExecutor {
         if (sender instanceof Player player) {
             try {
                 if (!player.hasPermission(permission)) {
-                    throw new InsufficientPermissionException(player, permission);
+                    throw new IllegalArgumentException(FlowwSmoke.getInstance().getConfiguration().getInsufficientPermissionsMessage());
                 }
                 return playerCommand(player, args);
             } catch (Exception ex) {
