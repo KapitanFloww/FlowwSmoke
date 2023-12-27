@@ -25,11 +25,17 @@ public interface SmokeLocationService {
     SmokeLocation getSmoke(int id) throws IllegalStateException;
 
     /**
-     * Get all smoke locations.
-     * @param worldName - if {@code null} return all registered locations, else return locations of the given world
-     * @return a {@link List} containing all {@link SmokeLocation}s
+     * Get all smoke locations for the specified world.
+     * @param worldName - name of the world to get locations for
+     * @return a {@link List} containing all {@link SmokeLocation}s of the given world
      */
     List<SmokeLocation> getAll(String worldName);
+
+    /**
+     * Get all smoke locations.
+     * @return a {@link List} containting all {@link SmokeLocation}s
+     */
+    List<SmokeLocation> getAll();
 
     /**
      * Delete a specific smoke location by its identifier.
@@ -38,8 +44,13 @@ public interface SmokeLocationService {
     void deleteSmoke(int id);
 
     /**
-     * Delete all smoke locations.
+     * Delete all smoke locations of the given world.
      * @param worldName - if {@code null} delete all registered locations, else only delete locations of the given world
      */
     void deleteAll(String worldName);
+
+    /**
+     * Delete all smoke locations.
+     */
+    void deleteAll();
 }

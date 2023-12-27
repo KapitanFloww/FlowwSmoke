@@ -21,6 +21,7 @@ import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_3;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_4;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_5;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_TITLE;
+import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_FREQUENCY;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_WORLD;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_X;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_Y;
@@ -43,7 +44,7 @@ public class SmokeCommandTest {
     private final SmokeLocationService locationServiceMock = mock(SmokeLocationService.class);
 
     // Unit-under-test
-    private final SmokeCommand smokeCommand = new SmokeCommand("test.smoke", locationServiceMock);
+    private final SmokeCommand smokeCommand = new SmokeCommand("test.smoke", locationServiceMock, DUMMY_FREQUENCY);
 
     @BeforeEach
     void setUp() {
@@ -126,9 +127,39 @@ public class SmokeCommandTest {
         // THEN
         verify(locationServiceMock, times(1)).addSmoke(eq(new SmokeLocation()
                 .withWorldName(DUMMY_WORLD)
+                .withFrequency(DUMMY_FREQUENCY) // as specified by config
                 .withX(DUMMY_X.intValue() + 0.5d)
                 .withY(DUMMY_Y.intValue() + 0.5d)
                 .withZ(DUMMY_Z.intValue() + 0.5d)));
+    }
+
+    @Test
+    void verifySmokeCreationWithCustomFrequency() {
+        // GIVEN
+        var args = new String[]{"add", "10"}; // add smoke with frequency of 10
+        // WHEN
+        smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
+        // THEN
+        verify(locationServiceMock, times(1)).addSmoke(eq(new SmokeLocation()
+                .withWorldName(DUMMY_WORLD)
+                .withFrequency(10) // as specified by args
+                .withX(DUMMY_X.intValue() + 0.5d)
+                .withY(DUMMY_Y.intValue() + 0.5d)
+                .withZ(DUMMY_Z.intValue() + 0.5d)));
+    }
+
+    @Test
+    void verifySmokeCreationWithIllegalFrequency() {
+        var args = new String[]{"add", "66.66"};
+        smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
+        verify(playerMock, times(1)).sendMessage(contains("Unable to parse: 66.66"));
+    }
+
+    @Test
+    void verifySmokeCreationFrequencyBelow1() {
+        var args = new String[]{"add", "-1"};
+        smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
+        verify(playerMock, times(1)).sendMessage(contains("Spawn-Frequency must not be < 1"));
     }
 
     @Test

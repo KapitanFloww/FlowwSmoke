@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.flowwindustries.flowwsmoke.commands.SmokeCommand;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
+import de.flowwindustries.flowwsmoke.service.impl.SmokeTaskServiceImpl;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationIOJsonServiceImpl;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationServiceImpl;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.FileOutputStream;
@@ -19,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 import java.util.function.Consumer;
 
 
@@ -28,9 +25,7 @@ public final class FlowwSmoke extends JavaPlugin {
 
     public static String pluginPrefix;
     public static String messagesInsufficientPermissions;
-
     private static final String SMOKE_PERMISSION = "floww.smoke";
-    private static final Random RANDOM = new Random();
 
     @Getter
     private static FlowwSmoke instance;
@@ -38,9 +33,13 @@ public final class FlowwSmoke extends JavaPlugin {
     private SmokeConfiguration configuration;
 
     private SmokeLocationService smokeLocationService;
+    private SmokeLocationIOService smokeLocationIOService;
+    private SmokeTaskServiceImpl smokeTaskService;
 
     @Override
     public void onEnable() {
+        instance = this;
+
         // Always save default configuration if not exists
         saveDefaultConfig();
 
@@ -49,7 +48,6 @@ public final class FlowwSmoke extends JavaPlugin {
         pluginPrefix = configuration.getPrefix();
         messagesInsufficientPermissions = configuration.getInsufficientPermissionsMessage();
 
-        instance = this;
 
         try {
             setupServices();
@@ -59,15 +57,16 @@ public final class FlowwSmoke extends JavaPlugin {
 
         setupCommands();
 
-        // Schedule the main plugin task
-        scheduleSmokeTask();
-
         String pluginVersion = instance.getDescription().getVersion();
         log.info("Initialization complete. Running version: " + pluginVersion);
     }
 
     @Override
     public void onDisable() {
+        log.info("Shutting down plugin");
+        // Cancel all running tasks of this plugin
+        log.config("Cancelling all scheduled tasks");
+        smokeTaskService.cancelAll();
     }
 
     private final Consumer<Runnable> persistTaskExecutor =
@@ -84,42 +83,20 @@ public final class FlowwSmoke extends JavaPlugin {
             mapper.writeValue(new FileOutputStream(storageFile), new ArrayList<>());
         }
 
-        final SmokeLocationIOService smokeLocationIOJsonService = new SmokeLocationIOJsonServiceImpl(storageFile, mapper, persistTaskExecutor);
-        this.smokeLocationService = new SmokeLocationServiceImpl(smokeLocationIOJsonService);
+        // Setup services
+        smokeLocationIOService = new SmokeLocationIOJsonServiceImpl(storageFile, mapper, persistTaskExecutor);
+        smokeTaskService = new SmokeTaskServiceImpl(Bukkit.getScheduler());
+        smokeLocationService = new SmokeLocationServiceImpl(smokeLocationIOService, smokeTaskService);
+
+        // Schedule tasks for all existing locations
+        final var activeSmokeLocations = Bukkit.getWorlds().stream()
+                .flatMap(world -> smokeLocationService.getAll(world.getName()).stream())
+                .distinct()
+                .toList();
+        activeSmokeLocations.forEach(smokeTaskService::scheduleSmokeTask);
     }
 
     private void setupCommands() {
-        Objects.requireNonNull(getCommand("smoke")).setExecutor(new SmokeCommand(SMOKE_PERMISSION, this.smokeLocationService));
-    }
-
-    private void scheduleSmokeTask() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(FlowwSmoke.getInstance(),
-                () -> smokeLocationService.getAll(null).forEach(smokeLocation -> {
-
-                    World world = Bukkit.getWorld(smokeLocation.getWorldName());
-                    if(world == null) {
-                        throw new IllegalStateException("World %s is not loaded!".formatted(smokeLocation.getWorldName()));
-                    }
-                    Location location = new Location(world, smokeLocation.getX(), smokeLocation.getY(), smokeLocation.getZ());
-
-                    // TODO unloading
-                    // TODO work with noise map
-
-                    if(RANDOM.nextInt(50) % 3 == 0) {
-                        return;
-                    }
-                    // TODO custom intensity
-                    if(!(RANDOM.nextInt(50) % 3 == 0)) {
-                        Objects.requireNonNull(world).spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location, 0, 1, 10.0d, 0.0d, 0.01d);
-                        return;
-                    }
-                    if(!(RANDOM.nextInt(50) % 2 == 0)) {
-                        Objects.requireNonNull(world).spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location, 0, 0.0d, 10.0d, 0.5d, 0.01d);
-                        return;
-                    }
-                    if(!(RANDOM.nextInt(50) % 4 == 0)) {
-                        Objects.requireNonNull(world).spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location, 0, -0.4d, 10.0d, -1, 0.01d);
-                    }
-                }), 0L, 7L);
+        Objects.requireNonNull(getCommand("smoke")).setExecutor(new SmokeCommand(SMOKE_PERMISSION, this.smokeLocationService, getConfiguration().getFallbackFrequency()));
     }
 }

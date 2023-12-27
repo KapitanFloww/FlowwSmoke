@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_FREQUENCY;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_WORLD;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_X;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_Y;
@@ -96,7 +97,7 @@ public class SmokeLocationIOServiceTest {
 
     private static List<SmokeLocation> getLocationsList() {
         List<SmokeLocation> locations = new ArrayList<>();
-        locations.add(new SmokeLocation(DUMMY_ID, DUMMY_WORLD, DUMMY_X, DUMMY_Y, DUMMY_Z));
+        locations.add(new SmokeLocation(DUMMY_ID, DUMMY_WORLD, DUMMY_X, DUMMY_Y, DUMMY_Z, DUMMY_FREQUENCY));
         return locations;
     }
 
