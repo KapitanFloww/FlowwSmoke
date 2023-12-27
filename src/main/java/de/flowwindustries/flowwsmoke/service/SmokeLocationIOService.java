@@ -18,7 +18,6 @@ public interface SmokeLocationIOService {
     /**
      * Load all smoke locations.
      * @return a {@link List} of persisted {@link SmokeLocation}s or a new and empty {@link java.util.ArrayList} if no import file is found
-     * @throws RuntimeException if an IO error occurs
      */
-    List<SmokeLocation> loadLocations() throws RuntimeException;
+    List<SmokeLocation> loadLocations();
 }

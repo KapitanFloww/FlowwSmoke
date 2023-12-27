@@ -1,7 +1,8 @@
 package de.flowwindustries.flowwsmoke.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
-import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationIOServiceImpl;
+import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationIOJsonServiceImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SmokeLocationIOServiceTest {
 
     private static final Integer DUMMY_ID = 1;
-    private static final String TEST_FILE_PATH = "test.dat";
+    private static final String TEST_FILE_PATH = "test.json";
     private static final File TEST_FILE = new File(TEST_FILE_PATH);
 
     // Unit-under-test
-    private final SmokeLocationIOServiceImpl smokeLocationIOService;
+    private final SmokeLocationIOService smokeLocationIOService;
 
     public SmokeLocationIOServiceTest() {
-        this.smokeLocationIOService = new SmokeLocationIOServiceImpl(TEST_FILE_PATH, Runnable::run); // simply run the runnable (no async for tests)
+        this.smokeLocationIOService = new SmokeLocationIOJsonServiceImpl(TEST_FILE, new ObjectMapper(), Runnable::run); // simply run the runnable (no async for tests)
     }
 
     @BeforeEach
