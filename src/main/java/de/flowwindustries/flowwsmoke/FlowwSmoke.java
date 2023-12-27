@@ -1,8 +1,10 @@
 package de.flowwindustries.flowwsmoke;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.flowwindustries.flowwsmoke.commands.SmokeCommand;
+import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
-import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationIOServiceImpl;
+import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationIOJsonServiceImpl;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationServiceImpl;
 import lombok.Getter;
 import lombok.extern.java.Log;
@@ -12,6 +14,10 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -23,7 +29,6 @@ public final class FlowwSmoke extends JavaPlugin {
     public static String pluginPrefix;
     public static String messagesInsufficientPermissions;
 
-    private static final String DATA_FILE_PATH = "plugins/FlowwSmoke/smoke-locations.dat";
     private static final String SMOKE_PERMISSION = "floww.smoke";
     private static final Random RANDOM = new Random();
 
@@ -46,7 +51,12 @@ public final class FlowwSmoke extends JavaPlugin {
 
         instance = this;
 
-        setupServices();
+        try {
+            setupServices();
+        } catch (IOException ex) {
+            log.severe(ex.getMessage());
+        }
+
         setupCommands();
 
         // Schedule the main plugin task
@@ -63,8 +73,19 @@ public final class FlowwSmoke extends JavaPlugin {
     private final Consumer<Runnable> persistTaskExecutor =
             runnable -> Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
 
-    private void setupServices() {
-        this.smokeLocationService = new SmokeLocationServiceImpl(new SmokeLocationIOServiceImpl(DATA_FILE_PATH, persistTaskExecutor));
+    private void setupServices() throws IOException {
+        final var mapper = new ObjectMapper();
+        final var storageFile = Path.of(getDataFolder().getPath(), "smoke-locations.json").toFile();
+
+        // Create the storage-file if not exists
+        if (!storageFile.exists()) {
+            log.info("Data file not found. Creating new file");
+            storageFile.createNewFile();
+            mapper.writeValue(new FileOutputStream(storageFile), new ArrayList<>());
+        }
+
+        final SmokeLocationIOService smokeLocationIOJsonService = new SmokeLocationIOJsonServiceImpl(storageFile, mapper, persistTaskExecutor);
+        this.smokeLocationService = new SmokeLocationServiceImpl(smokeLocationIOJsonService);
     }
 
     private void setupCommands() {
