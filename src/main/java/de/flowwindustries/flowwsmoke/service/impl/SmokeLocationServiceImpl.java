@@ -1,7 +1,6 @@
 package de.flowwindustries.flowwsmoke.service.impl;
 
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
-import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import lombok.extern.java.Log;
@@ -29,15 +28,11 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
     }
 
     @Override
-    public int addSmoke(SmokeLocationDTO smokeLocationDTO) {
+    public int addSmoke(SmokeLocation smokeLocation) {
         int currentId = counter++;
-        smokeLocations.add(new SmokeLocation()
-                .withWorldName(smokeLocationDTO.getWorldName())
-                .withX(smokeLocationDTO.getX())
-                .withY(smokeLocationDTO.getY())
-                .withZ(smokeLocationDTO.getZ())
-                .withId(currentId));
-        log.config("Added smoke location %s at [%s , %s, %s]".formatted(currentId, smokeLocationDTO.getX(), smokeLocationDTO.getY(), smokeLocationDTO.getZ()));
+        smokeLocation.setId(currentId);
+        smokeLocations.add(smokeLocation);
+        log.config("Added smoke location %s at [%s , %s, %s]".formatted(smokeLocation.getId(), smokeLocation.getX(), smokeLocation.getY(), smokeLocation.getZ()));
 
         persistLocations();
 

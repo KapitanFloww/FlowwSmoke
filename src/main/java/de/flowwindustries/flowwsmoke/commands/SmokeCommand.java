@@ -1,7 +1,7 @@
 package de.flowwindustries.flowwsmoke.commands;
 
 import de.flowwindustries.flowwsmoke.FlowwSmoke;
-import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
+import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import de.flowwindustries.flowwsmoke.utils.messages.PlayerMessage;
 import lombok.extern.java.Log;
@@ -113,12 +113,12 @@ public class SmokeCommand implements CommandExecutor {
         double z = targetBlock.getZ() + 0.5d;
         String worldName = targetBlock.getWorld().getName();
 
-        var dto = new SmokeLocationDTO()
+        var location = new SmokeLocation()
                 .withWorldName(worldName)
                 .withX(x)
                 .withY(y)
                 .withZ(z);
-        int id = smokeLocationService.addSmoke(dto);
+        int id = smokeLocationService.addSmoke(location);
         PlayerMessage.success("Placed smoke (%s) at [%s, %s, %s]".formatted(id, x, y, z), player);
     }
 

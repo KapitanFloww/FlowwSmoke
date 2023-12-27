@@ -1,6 +1,6 @@
 package de.flowwindustries.flowwsmoke.commands;
 
-import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
+import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -124,7 +124,7 @@ public class SmokeCommandTest {
         // WHEN
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
         // THEN
-        verify(locationServiceMock, times(1)).addSmoke(eq(new SmokeLocationDTO()
+        verify(locationServiceMock, times(1)).addSmoke(eq(new SmokeLocation()
                 .withWorldName(DUMMY_WORLD)
                 .withX(DUMMY_X.intValue() + 0.5d)
                 .withY(DUMMY_Y.intValue() + 0.5d)

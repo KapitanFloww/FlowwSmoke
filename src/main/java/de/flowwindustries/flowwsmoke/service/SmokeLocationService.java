@@ -1,7 +1,6 @@
 package de.flowwindustries.flowwsmoke.service;
 
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
-import de.flowwindustries.flowwsmoke.domain.SmokeLocationDTO;
 
 import java.util.List;
 
@@ -12,10 +11,10 @@ public interface SmokeLocationService {
 
     /**
      * Create and add a new smoke location.
-     * @param smokeLocationDTO - data transfer object for smoke locations
+     * @param smokeLocation - the smoke location to add
      * @return the identifier of the newly created location
      */
-    int addSmoke(SmokeLocationDTO smokeLocationDTO);
+    int addSmoke(SmokeLocation smokeLocation);
 
     /**
      * Get a specific smoke location by its identifier.
