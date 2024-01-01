@@ -2,6 +2,7 @@ package de.flowwindustries.flowwsmoke.service;
 
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationServiceImpl;
+import de.flowwindustries.flowwsmoke.service.impl.SmokeTaskServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +17,7 @@ public class SmokeLocationServiceImplTest {
     public static final Double DUMMY_X = 1.0d;
     public static final Double DUMMY_Y = 2.0d;
     public static final Double DUMMY_Z = 3.0d;
+    public static final Integer DUMMY_FREQUENCY = 3;
     public static final String DUMMY_WORLD = "dummyWorld";
     private static final String DUMMY_WORLD_2 = "dummyWorld_2";
 
@@ -25,7 +27,7 @@ public class SmokeLocationServiceImplTest {
 
     public SmokeLocationServiceImplTest() {
         this.smokeLocationIOService = mock(SmokeLocationIOService.class);
-        this.smokeLocationService = new SmokeLocationServiceImpl(this.smokeLocationIOService);
+        this.smokeLocationService = new SmokeLocationServiceImpl(this.smokeLocationIOService, new SmokeTaskServiceImpl(new TestBukkitScheduler()));
     }
 
     @Test
@@ -35,8 +37,8 @@ public class SmokeLocationServiceImplTest {
         int id = smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         // THEN
         assertThat(id).isNotNull();
-        assertThat(smokeLocationService.getAll(null)).hasSize(1);
-        assertSmokeLocation(smokeLocationService.getAll(null).get(0), id, DUMMY_WORLD);
+        assertThat(smokeLocationService.getAll()).hasSize(1);
+        assertSmokeLocation(smokeLocationService.getAll().get(0), id, DUMMY_WORLD);
     }
 
     @Test
@@ -96,7 +98,7 @@ public class SmokeLocationServiceImplTest {
         // GIVEN
         int id = smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         // WHEN
-        var result = smokeLocationService.getAll(null);
+        var result = smokeLocationService.getAll();
         // THEN
         assertThat(result).hasSize(1);
         assertSmokeLocation(result.get(0), id, DUMMY_WORLD);
@@ -108,7 +110,7 @@ public class SmokeLocationServiceImplTest {
         int id = smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         int id2 = smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         // WHEN
-        var result = smokeLocationService.getAll(null);
+        var result = smokeLocationService.getAll();
         // THEN
         assertThat(result).hasSize(2);
         assertSmokeLocation(result.get(0), id, DUMMY_WORLD);
@@ -133,7 +135,7 @@ public class SmokeLocationServiceImplTest {
         int id1 = smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         int id2 = smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD_2));
         // WHEN
-        var result = smokeLocationService.getAll(null); // Should return all entries
+        var result = smokeLocationService.getAll(); // Should return all entries
         // THEN
         assertThat(result).hasSize(2);
         assertSmokeLocation(result.get(0), id1, DUMMY_WORLD);
@@ -142,7 +144,7 @@ public class SmokeLocationServiceImplTest {
 
     @Test
     void verifyGetAllEmpty() {
-        assertThat(smokeLocationService.getAll(null)).isEmpty();
+        assertThat(smokeLocationService.getAll()).isEmpty();
     }
 
     @Test
@@ -172,14 +174,14 @@ public class SmokeLocationServiceImplTest {
     }
 
     @Test
-    void verifyDeleteAllNull() {
+    void verifyDeleteAll() {
         // GIVEN
         smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD_2));
         // WHEN
-        smokeLocationService.deleteAll(null);
+        smokeLocationService.deleteAll();
         // THEN
-        assertThat(smokeLocationService.getAll(null)).isEmpty();
+        assertThat(smokeLocationService.getAll()).isEmpty();
     }
 
     @Test
@@ -188,7 +190,7 @@ public class SmokeLocationServiceImplTest {
         smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         smokeLocationService.addSmoke(getDummySmokeLocation(DUMMY_WORLD));
         // WHEN
-        smokeLocationService.deleteAll(null);
+        smokeLocationService.deleteAll();
         // THEN
         verify(smokeLocationIOService, times(3)).persistLocations(anyList()); // 2 add + 1 delete
     }
@@ -201,7 +203,7 @@ public class SmokeLocationServiceImplTest {
         // WHEN
         smokeLocationService.deleteAll(DUMMY_WORLD);
         // THEnN
-        var result = smokeLocationService.getAll(null); // Should return all entries
+        var result = smokeLocationService.getAll(); // Should return all entries
         assertThat(result).hasSize(1);
         assertSmokeLocation(result.get(0), id2, DUMMY_WORLD_2);
     }
@@ -220,6 +222,7 @@ public class SmokeLocationServiceImplTest {
     private static SmokeLocation getDummySmokeLocation(String worldName) {
         return new SmokeLocation()
                 .withWorldName(worldName)
+                .withFrequency(DUMMY_FREQUENCY)
                 .withX(DUMMY_X)
                 .withY(DUMMY_Y)
                 .withZ(DUMMY_Z);
@@ -232,5 +235,6 @@ public class SmokeLocationServiceImplTest {
         assertThat(smokeLocation.getX()).isEqualTo(DUMMY_X);
         assertThat(smokeLocation.getY()).isEqualTo(DUMMY_Y);
         assertThat(smokeLocation.getZ()).isEqualTo(DUMMY_Z);
+        assertThat(smokeLocation.getFrequency()).isEqualTo(DUMMY_FREQUENCY);
     }
 }

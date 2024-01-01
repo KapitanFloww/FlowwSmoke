@@ -18,4 +18,5 @@ public class SmokeLocation {
     private Double x;
     private Double y;
     private Double z;
+    private Integer frequency;
 }

@@ -19,4 +19,9 @@ public class SmokeConfiguration {
     public String getInsufficientPermissionsMessage() {
         return fileConfiguration.getString("messages.insufficient-permission");
     }
+
+    public int getFallbackFrequency() {
+        return fileConfiguration.getInt("fallback-poll-frequency");
+    }
+
 }

@@ -34,7 +34,7 @@ public class SmokeLocationIOJsonServiceImpl implements SmokeLocationIOService {
             @Override
             public void run() {
                 try {
-                    log.info("Persisting %s locations".formatted(locations.size()));
+                    log.config("Persisting %s locations".formatted(locations.size()));
                     objectMapper.writeValue(new FileOutputStream(storageFile), locations);
                 } catch (IOException ex) {
                     log.severe("Could not persist locations: " + ex.getMessage());
@@ -48,7 +48,7 @@ public class SmokeLocationIOJsonServiceImpl implements SmokeLocationIOService {
     public synchronized List<SmokeLocation> loadLocations() {
         try {
             final var locations = objectMapper.readValue(new FileInputStream(storageFile), new TypeReference<List<SmokeLocation>>(){});
-            log.info("Loaded %s locations from file".formatted(locations.size()));
+            log.info("Loaded %s locations from file: %s".formatted(locations.size(), storageFile.getPath()));
             return locations;
         } catch (IOException ex) {
             log.severe("Could not load locations: " + ex.getMessage());
