@@ -1,5 +1,6 @@
 package de.flowwindustries.flowwsmoke.tasks;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -11,22 +12,33 @@ import java.util.Random;
  */
 public class SmokeSpawnPattern {
 
+    private static final double DATA = 0.01; // Without this, particles will flicker randomly
     private static final Random RAND = new Random();
 
-    public void execute(final World world, final Location location) {
-        if(RAND.nextInt(50) % 3 == 0) {
+    private final double deviation;
+
+    public SmokeSpawnPattern(double deviation) {
+        Preconditions.checkArgument(deviation >= 0);
+        this.deviation = deviation;
+    }
+
+    public void execute(final World world, final Location location, final SmokeSpawnOffset offset) {
+        double offsetX = offset.x();
+        double offsetY = offset.y() + 10.0; // To make it fly up always
+        double offsetZ = offset.z();
+
+        // Add deviation is allowed create and offset
+        if (deviation != 0) {
+            offsetX += RAND.nextDouble(-deviation, deviation);
+            offsetY += RAND.nextDouble(-deviation, deviation);
+            offsetZ += RAND.nextDouble(-deviation, deviation);
+        }
+
+        final int numerator = RAND.nextInt(1, 50);
+        final int denominator = RAND.nextInt(1, 10);
+        if(numerator % denominator == 0) {
             return;
         }
-        if(!(RAND.nextInt(50) % 3 == 0)) {
-            world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location, 0, 1, 10.0d, 0.0d, 0.01d);
-            return;
-        }
-        if(!(RAND.nextInt(50) % 2 == 0)) {
-            world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location, 0, 0.0d, 10.0d, 0.5d, 0.01d);
-            return;
-        }
-        if(!(RAND.nextInt(50) % 4 == 0)) {
-            world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location, 0, -0.4d, 10.0d, -1, 0.01d);
-        }
+        world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, location, 0, offsetX, offsetY, offsetZ, DATA);
     }
 }

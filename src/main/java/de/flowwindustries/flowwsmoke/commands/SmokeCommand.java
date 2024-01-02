@@ -18,6 +18,7 @@ import java.util.Objects;
 /**
  * Smoke Command to create small smokers.
  * /smoke - create new smoke
+ * /smoke add (frequency) [offsetX] [offsetY] [offsetZ] - create a new custom smoke spawn
  * /smoke list [world] - list all smokes
  * /smoke remove (id) - remove smoke with id or all smokes
  * /smoke remove all [world] - remove all smokes
@@ -87,6 +88,17 @@ public class SmokeCommand implements CommandExecutor {
                 }
                 executeRemoveAll(player, args[2]); // smoke remove all <world>
             }
+            case 5 -> {
+                // smoke add (frequency) (offsetX) (offsetY) (offsetZ)
+                if (!args[0].equalsIgnoreCase("add")) {
+                    throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments").replace("{argument}", args[0]));
+                }
+                final int spawnFrequency = SpigotStringParser.parseIntSafe(args[1]);
+                final double offsetX = SpigotStringParser.parseDoubleSafe(args[2]);
+                final double offsetY = SpigotStringParser.parseDoubleSafe(args[3]);
+                final double offsetZ = SpigotStringParser.parseDoubleSafe(args[4]);
+                executeSmokeCreation(player, spawnFrequency, offsetX, offsetY, offsetZ);
+            }
             default -> throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments-length").replace("{arguments_length}", String.valueOf(args.length)));
         }
         return true; //remove all <world>
@@ -102,6 +114,10 @@ public class SmokeCommand implements CommandExecutor {
     }
 
     private void executeSmokeCreation(Player player, int frequency) {
+        executeSmokeCreation(player, frequency, 0.0, 0.0, 0.0);
+    }
+
+    private void executeSmokeCreation(Player player, int frequency, double offsetX, double offsetY, double offsetZ) {
         if (frequency < 1) {
             throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.frequency-less-equal-zero"));
         }
@@ -119,14 +135,18 @@ public class SmokeCommand implements CommandExecutor {
                 .withWorldName(worldName)
                 .withX(x)
                 .withY(y)
-                .withZ(z);
+                .withZ(z)
+                .withOffsetX(offsetX)
+                .withOffsetY(offsetY)
+                .withOffsetZ(offsetZ);
         int id = smokeLocationService.addSmoke(location);
         PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.placed-success")
                         .replace("{id}", String.valueOf(id))
                         .replace("{x}", String.valueOf(location.getX()))
                         .replace("{y}", String.valueOf(location.getY()))
                         .replace("{z}", String.valueOf(location.getZ()))
-                        .replace("{frequency}", String.valueOf(location.getFrequency())),
+                        .replace("{frequency}", String.valueOf(location.getFrequency()))
+                        .replace("{customOffset}", String.valueOf(hasCustomOffset(location))),
                 player);
     }
 
@@ -146,7 +166,8 @@ public class SmokeCommand implements CommandExecutor {
                                 .replace("{x}", String.valueOf(location.getX()))
                                 .replace("{y}", String.valueOf(location.getY()))
                                 .replace("{z}", String.valueOf(location.getZ()))
-                                .replace("{frequency}", String.valueOf(location.getFrequency())),
+                                .replace("{frequency}", String.valueOf(location.getFrequency()))
+                                .replace("{customOffset}", String.valueOf(hasCustomOffset(location))),
                         player)
         );
     }
@@ -163,5 +184,9 @@ public class SmokeCommand implements CommandExecutor {
             PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.delete-all-world").replace("{world}", worldName), player);
         }
         smokeLocationService.deleteAll(worldName);
+    }
+
+    private static boolean hasCustomOffset(SmokeLocation smokeLocation) {
+        return smokeLocation.getOffsetX() != 0.0 || smokeLocation.getOffsetY() != 0.0 || smokeLocation.getOffsetZ() != 0.0;
     }
 }

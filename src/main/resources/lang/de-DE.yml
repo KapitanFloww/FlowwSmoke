@@ -10,10 +10,10 @@ messages:
     input-argument-null: "Eingabe ist null"
     smoke-id-not-unique: "Keine eindeutigen Rauch-Ort gefunden mit Id: {id}"
   smoke:
-    placed-success: "Rauch-Ort ({id}) bei [{x}, {y}, {z}] platziert. Spawn-Frequenz: {frequency}"
+    placed-success: "Rauch-Ort ({id}) bei [{x}, {y}, {z}] platziert. Spawn-Frequenz: {frequency}. Angepasste Richtung: {customOffset}"
     list-all-world: "Zeige all Rauch-Orte in Welt {world}:"
     list-all: "Zeige all Rauch-Orte:"
-    list-info-item: "Rauch-Ort ({id}) - bei [{x}, {y}, {z}]. Spawn-Frequenz: {frequency}"
+    list-info-item: "Rauch-Ort ({id}) - bei [{x}, {y}, {z}]. Spawn-Frequenz: {frequency}. Angepasste Richtung: {customOffset}"
     delete-success: "Rauch-Ort gelöscht: {id}"
     delete-all: "Alle Rauch-Orte gelöscht"
     delete-all-world: "Alle Rauch-Orte in Welt {world} gelöscht"
@@ -21,6 +21,7 @@ messages:
       -- Smoke Hilfe --
       /smoke - neuen Rauch am Zielort erzeugen
       /smoke add (frequency in server-ticks) - neuen Rauch am Zielort mit benutzerdefinierter Spawn-Häufigkeit erzeugen
+      /smoke add (frequency in server-ticks) (offsetX) (offsetY) (offsetZ) - neuen Rauch am Zielort mit benutzerdefinierter Spawn-Häufigkeit erzeugen
       /smoke list [world] - alle Rauche-Orte anzeigen [in Welt]
       /smoke remove (id) - Rauch-Ort mit Id löschen
       /smoke remove all [world] - alle Rauch-Orte löschen [in Welt]

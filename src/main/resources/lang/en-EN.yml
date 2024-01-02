@@ -10,10 +10,10 @@ messages:
     input-argument-null: "Input argument is null!"
     smoke-id-not-unique: "No unique location found for Id: {id}"
   smoke:
-    placed-success: "Placed smoke ({id}) at [{x}, {y}, {z}]. Spawn-Frequency: {frequency}"
+    placed-success: "Placed smoke ({id}) at [{x}, {y}, {z}]. Spawn-Frequency: {frequency}. Custom-Offset: {customOffset}"
     list-all-world: "Listing all smokes of world {world}:"
     list-all: "Listing all smokes:"
-    list-info-item: "Smoke ({id}) - at [{x}, {y}, {z}]. Spawn-Frequency: {frequency}"
+    list-info-item: "Smoke ({id}) - at [{x}, {y}, {z}]. Spawn-Frequency: {frequency}. Custom-Offset: {customOffset}"
     delete-success: "Deleted smoke: {id}"
     delete-all: "Deleted all smokes"
     delete-all-world: "Deleted all smokes in world {world}"
@@ -21,6 +21,7 @@ messages:
       -- Smoke Help --
       /smoke - create new smoke at target location
       /smoke add (frequency in server-ticks) - create new smoke at target location with custom spawn-frequency
+      /smoke add (frequency in server-ticks) (offsetX) (offsetY) (offsetZ) - create new smoke at target location with custom spawn-frequency and offset
       /smoke list [world] - list all smokes [in world]
       /smoke remove (id) - remove smoke with id
       /smoke remove all [world] - remove all smokes [in world]

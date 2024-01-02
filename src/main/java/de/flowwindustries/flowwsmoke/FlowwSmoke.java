@@ -104,7 +104,7 @@ public final class FlowwSmoke extends JavaPlugin {
 
         // Setup services
         smokeLocationIOService = new SmokeLocationIOJsonServiceImpl(storageFile, mapper, persistTaskExecutor);
-        smokeTaskService = new SmokeTaskServiceImpl(Bukkit.getScheduler());
+        smokeTaskService = new SmokeTaskServiceImpl(Bukkit.getScheduler(), getConfiguration().getAllowedSpawnDeviation());
         smokeLocationService = new SmokeLocationServiceImpl(smokeLocationIOService, smokeTaskService);
 
         // Schedule tasks for all existing locations

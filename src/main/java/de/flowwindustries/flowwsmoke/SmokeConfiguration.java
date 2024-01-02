@@ -32,6 +32,10 @@ public class SmokeConfiguration {
         return fileConfiguration.getInt("fallback-poll-frequency");
     }
 
+    public double getAllowedSpawnDeviation() {
+        return fileConfiguration.getDouble("allowed-spawn-deviation");
+    }
+
     private void validateConfiguration(FileConfiguration fileConfiguration) {
         try (final InputStreamReader in = new InputStreamReader(Objects.requireNonNull(SmokeConfiguration.class.getResourceAsStream("/config.yml")))) {
             final var expectedConfiguration = new YamlConfiguration();
