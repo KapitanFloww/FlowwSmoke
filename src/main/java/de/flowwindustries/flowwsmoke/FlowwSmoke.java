@@ -1,6 +1,7 @@
 package de.flowwindustries.flowwsmoke;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import de.flowwindustries.flowwsmoke.commands.SmokeCommand;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
@@ -74,6 +75,7 @@ public final class FlowwSmoke extends JavaPlugin {
 
     private void setupServices() throws IOException {
         final var mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT); // pretty format of json output
         final var storageFile = Path.of(getDataFolder().getPath(), "smoke-locations.json").toFile();
 
         // Create the storage-file if not exists
