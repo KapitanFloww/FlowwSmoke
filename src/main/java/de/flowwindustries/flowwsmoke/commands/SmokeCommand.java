@@ -26,7 +26,7 @@ import java.util.Objects;
 public class SmokeCommand implements CommandExecutor {
 
     public static final String UNKNOWN_ARGUMENT = "Unknown Argument: %s";
-    public static final String UNKNOWN_ARGUMENTS_LENGTH = "Unknown argument length";
+    public static final String UNKNOWN_ARGUMENTS_LENGTH = "Unknown argument length: %s";
 
     public static final String MSG_HELP_TITLE = "-- Smoke Help --";
     public static final String MSG_HELP_1 = "/smoke - create new smoke at target location";
@@ -98,7 +98,7 @@ public class SmokeCommand implements CommandExecutor {
                 }
                 executeRemoveAll(player, args[2]); // smoke remove all <world>
             }
-            default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENTS_LENGTH);
+            default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENTS_LENGTH.formatted(args.length));
         }
         return true; //remove all <world>
     }

@@ -184,6 +184,6 @@ public class SmokeCommandTest {
         // WHEN
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
         // THEN
-        verify(playerMock, times(1)).sendMessage(contains(UNKNOWN_ARGUMENTS_LENGTH));
+        verify(playerMock, times(1)).sendMessage(contains(UNKNOWN_ARGUMENTS_LENGTH.formatted(args.length)));
     }
 }
