@@ -13,14 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.INVALID_ARGUMENTS;
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.INVALID_ARGUMENTS_LENGTH;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_1;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_2;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_3;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_4;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_5;
 import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_TITLE;
+import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.UNKNOWN_ARGUMENTS_LENGTH;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_FREQUENCY;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_WORLD;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_X;
@@ -175,7 +174,7 @@ public class SmokeCommandTest {
         argsList.forEach(args -> smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args));
 
         // THEN
-        verify(playerMock, times(argsList.size())).sendMessage(contains(INVALID_ARGUMENTS));
+        verify(playerMock, times(argsList.size())).sendMessage(contains("Unknown Argument"));
     }
 
     @Test
@@ -185,6 +184,6 @@ public class SmokeCommandTest {
         // WHEN
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
         // THEN
-        verify(playerMock, times(1)).sendMessage(contains(INVALID_ARGUMENTS_LENGTH));
+        verify(playerMock, times(1)).sendMessage(contains(UNKNOWN_ARGUMENTS_LENGTH));
     }
 }

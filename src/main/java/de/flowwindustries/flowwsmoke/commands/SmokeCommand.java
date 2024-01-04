@@ -25,8 +25,8 @@ import java.util.Objects;
 @Log
 public class SmokeCommand implements CommandExecutor {
 
-    public static final String INVALID_ARGUMENTS = "Invalid arguments at index";
-    public static final String INVALID_ARGUMENTS_LENGTH = "Invalid argument length";
+    public static final String UNKNOWN_ARGUMENT = "Unknown Argument: %s";
+    public static final String UNKNOWN_ARGUMENTS_LENGTH = "Unknown argument length";
 
     public static final String MSG_HELP_TITLE = "-- Smoke Help --";
     public static final String MSG_HELP_1 = "/smoke - create new smoke at target location";
@@ -70,7 +70,7 @@ public class SmokeCommand implements CommandExecutor {
                 switch (args[0].toLowerCase(Locale.getDefault())) {
                     case "help" -> executeHelp(player); // smoke help
                     case "list" -> executeListAll(player, null); // smoke list
-                    default -> throw new IllegalArgumentException(INVALID_ARGUMENTS);
+                    default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[0]));
                 }
             }
             case 2 -> {
@@ -84,21 +84,21 @@ public class SmokeCommand implements CommandExecutor {
                             executeRemoveSmoke(player, id); // smoke remove [id]
                         } catch (NumberFormatException ex) {
                             if(!args[1].equalsIgnoreCase("all")) {
-                                throw new IllegalArgumentException(INVALID_ARGUMENTS);
+                                throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[1]));
                             }
                             executeRemoveAll(player, null); // smoke remove all
                         }
                     }
-                    default -> throw new IllegalArgumentException(INVALID_ARGUMENTS);
+                    default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[0]));
                 }
             }
             case 3 -> {
                 if(!(args[0].equalsIgnoreCase("remove") && args[1].equalsIgnoreCase("all"))) {
-                    throw new IllegalArgumentException(INVALID_ARGUMENTS);
+                    throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[0] + " " + args[1]));
                 }
                 executeRemoveAll(player, args[2]); // smoke remove all <world>
             }
-            default -> throw new IllegalArgumentException(INVALID_ARGUMENTS_LENGTH);
+            default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENTS_LENGTH);
         }
         return true; //remove all <world>
     }
