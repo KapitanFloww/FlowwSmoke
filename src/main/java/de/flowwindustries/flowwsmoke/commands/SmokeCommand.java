@@ -1,7 +1,7 @@
 package de.flowwindustries.flowwsmoke.commands;
 
-import de.flowwindustries.flowwsmoke.FlowwSmoke;
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
+import de.flowwindustries.flowwsmoke.lang.LanguageLoader;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import de.flowwindustries.flowwsmoke.utils.messages.PlayerMessage;
 import de.flowwindustries.flowwsmoke.utils.parsing.SpigotStringParser;
@@ -25,17 +25,6 @@ import java.util.Objects;
 @Log
 public class SmokeCommand implements CommandExecutor {
 
-    public static final String UNKNOWN_ARGUMENT = "Unknown Argument: %s";
-    public static final String UNKNOWN_ARGUMENTS_LENGTH = "Unknown argument length: %s";
-
-    public static final String MSG_HELP_TITLE = "-- Smoke Help --";
-    public static final String MSG_HELP_1 = "/smoke - create new smoke at target location";
-    public static final String MSG_HELP_2 = "/smoke add (frequency in server-ticks) - create new smoke at target location with custom spawn-frequency";
-    public static final String MSG_HELP_3 = "/smoke list [world] - list all smokes [in world]";
-    public static final String MSG_HELP_4 = "/smoke remove (id) - remove smoke with id";
-    public static final String MSG_HELP_5 = "/smoke remove all [world] - remove all smokes [in world]";
-    public static final String MSG_HELP_6 = "-- [] - optional args, () - required args --";
-
     private final SmokeLocationService smokeLocationService;
     private final Integer fallbackFrequency;
     private final String permission;
@@ -51,7 +40,7 @@ public class SmokeCommand implements CommandExecutor {
         if (sender instanceof Player player) {
             try {
                 if (!player.hasPermission(permission)) {
-                    throw new IllegalArgumentException(FlowwSmoke.getInstance().getConfiguration().getInsufficientPermissionsMessage());
+                    throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.insufficient-permission"));
                 }
                 return playerCommand(player, args);
             } catch (Exception ex) {
@@ -70,7 +59,7 @@ public class SmokeCommand implements CommandExecutor {
                 switch (args[0].toLowerCase(Locale.getDefault())) {
                     case "help" -> executeHelp(player); // smoke help
                     case "list" -> executeListAll(player, null); // smoke list
-                    default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[0]));
+                    default -> throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments").replace("{argument}", args[0]));
                 }
             }
             case 2 -> {
@@ -84,27 +73,27 @@ public class SmokeCommand implements CommandExecutor {
                             executeRemoveSmoke(player, id); // smoke remove [id]
                         } catch (NumberFormatException ex) {
                             if(!args[1].equalsIgnoreCase("all")) {
-                                throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[1]));
+                                throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments").replace("{argument}", args[1]));
                             }
                             executeRemoveAll(player, null); // smoke remove all
                         }
                     }
-                    default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[0]));
+                    default -> throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments").replace("{argument}", args[0]));
                 }
             }
             case 3 -> {
                 if(!(args[0].equalsIgnoreCase("remove") && args[1].equalsIgnoreCase("all"))) {
-                    throw new IllegalArgumentException(UNKNOWN_ARGUMENT.formatted(args[0] + " " + args[1]));
+                    throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments").replace("{argument}", args[0] + ", " +args[1]));
                 }
                 executeRemoveAll(player, args[2]); // smoke remove all <world>
             }
-            default -> throw new IllegalArgumentException(UNKNOWN_ARGUMENTS_LENGTH.formatted(args.length));
+            default -> throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments-length").replace("{arguments_length}", String.valueOf(args.length)));
         }
         return true; //remove all <world>
     }
 
     private boolean consoleCommand(String[] args) {
-        log.info("Sorry. Command can only be used in-game");
+        log.info(LanguageLoader.getMessage("messages.errors.console-not-supported"));
         return false;
     }
 
@@ -114,11 +103,11 @@ public class SmokeCommand implements CommandExecutor {
 
     private void executeSmokeCreation(Player player, int frequency) {
         if (frequency < 1) {
-            throw new IllegalArgumentException("Spawn-Frequency must not be < 1");
+            throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.frequency-less-equal-zero"));
         }
         Block targetBlock = player.getTargetBlockExact(5);
         if(targetBlock == null) {
-            throw new IllegalArgumentException("Must be looking at a block close-by");
+            throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.not-looking-at-block"));
         }
         double x = targetBlock.getX() + 0.5d;
         double y = targetBlock.getY() + 0.5d;
@@ -132,40 +121,46 @@ public class SmokeCommand implements CommandExecutor {
                 .withY(y)
                 .withZ(z);
         int id = smokeLocationService.addSmoke(location);
-        PlayerMessage.success("Placed smoke (%s) at [%s, %s, %s]. Spawn-Frequency: %s".formatted(id, x, y, z, frequency), player);
+        PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.placed-success")
+                        .replace("{id}", String.valueOf(id))
+                        .replace("{x}", String.valueOf(location.getX()))
+                        .replace("{y}", String.valueOf(location.getY()))
+                        .replace("{z}", String.valueOf(location.getZ()))
+                        .replace("{frequency}", String.valueOf(location.getFrequency())),
+                player);
     }
 
     private void executeHelp(Player player) {
-        PlayerMessage.info(MSG_HELP_TITLE, player);
-        PlayerMessage.info(MSG_HELP_1, player);
-        PlayerMessage.info(MSG_HELP_2, player);
-        PlayerMessage.info(MSG_HELP_3, player);
-        PlayerMessage.info(MSG_HELP_4, player);
-        PlayerMessage.info(MSG_HELP_5, player);
-        PlayerMessage.info(MSG_HELP_6, player);
+        PlayerMessage.info(LanguageLoader.getMessage("messages.smoke.help"), player);
     }
 
     private void executeListAll(Player player, String worldName) {
         if(worldName == null) {
-            PlayerMessage.info("Listing all smokes:", player);
+            PlayerMessage.info(LanguageLoader.getMessage("messages.smoke.list-all"), player);
         } else {
-            PlayerMessage.info("Listing all smokes in world %s:".formatted(worldName), player);
+            PlayerMessage.info(LanguageLoader.getMessage("messages.smoke.list-all-world").replace("{world}", worldName), player);
         }
-        smokeLocationService.getAll(worldName).forEach(smokeLocation ->
-                PlayerMessage.info("Smoke (%s) - at [%s, %s, %s]. Spawn-Frequency: %s".formatted(smokeLocation.getId(), smokeLocation.getX(), smokeLocation.getY(), smokeLocation.getZ(), smokeLocation.getFrequency()), player)
+        smokeLocationService.getAll(worldName).forEach(location ->
+                PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.list-info-item")
+                                .replace("{id}", String.valueOf(location.getId()))
+                                .replace("{x}", String.valueOf(location.getX()))
+                                .replace("{y}", String.valueOf(location.getY()))
+                                .replace("{z}", String.valueOf(location.getZ()))
+                                .replace("{frequency}", String.valueOf(location.getFrequency())),
+                        player)
         );
     }
 
     private void executeRemoveSmoke(Player player, Integer id) {
         smokeLocationService.deleteSmoke(id);
-        PlayerMessage.success("Deleted smoke: %s".formatted(id), player);
+        PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.delete-success").replace("{id}", String.valueOf(id)), player);
     }
 
     private void executeRemoveAll(Player player, String worldName) {
         if(worldName == null) {
-            PlayerMessage.success("Deleted all smokes", player);
+            PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.delete-all"), player);
         } else {
-            PlayerMessage.success("Deleted all smokes in world %s".formatted(worldName), player);
+            PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.delete-all-world").replace("{world}", worldName), player);
         }
         smokeLocationService.deleteAll(worldName);
     }

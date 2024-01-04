@@ -1,7 +1,9 @@
 package de.flowwindustries.flowwsmoke.commands;
 
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
+import de.flowwindustries.flowwsmoke.lang.LanguageLoader;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
+import org.assertj.core.api.Assertions;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -9,17 +11,10 @@ import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_1;
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_2;
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_3;
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_4;
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_5;
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.MSG_HELP_TITLE;
-import static de.flowwindustries.flowwsmoke.commands.SmokeCommand.UNKNOWN_ARGUMENTS_LENGTH;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_FREQUENCY;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_WORLD;
 import static de.flowwindustries.flowwsmoke.service.SmokeLocationServiceImplTest.DUMMY_X;
@@ -47,6 +42,11 @@ public class SmokeCommandTest {
 
     @BeforeEach
     void setUp() {
+        // to verify that the translations are set up properly for tests
+        final var file = new File("./src/main/resources/lang/en-EN.yml");
+        LanguageLoader.init(file.toPath());
+        Assertions.assertThat(LanguageLoader.getMessage("messages.errors.unknown-arguments")).isEqualTo("Unknown Argument: {argument}");
+
         when(playerMock.hasPermission(eq("test.smoke"))).thenReturn(true);
         when(playerMock.getTargetBlockExact(eq(5))).thenReturn(blockMock);
         when(blockMock.getX()).thenReturn(DUMMY_X.intValue());
@@ -63,8 +63,7 @@ public class SmokeCommandTest {
         // WHEN
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
         // THEN
-        Stream.of(MSG_HELP_TITLE, MSG_HELP_1, MSG_HELP_2, MSG_HELP_3, MSG_HELP_4, MSG_HELP_5)
-                .forEach(msg -> verify(playerMock, times(1)).sendMessage(contains(msg)));
+        verify(playerMock, times(1)).sendMessage(contains(LanguageLoader.getMessage("messages.smoke.help")));
     }
 
     @Test
@@ -151,7 +150,7 @@ public class SmokeCommandTest {
     void verifySmokeCreationWithIllegalFrequency() {
         var args = new String[]{"add", "66.66"};
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
-        verify(playerMock, times(1)).sendMessage(contains("Unable to parse: 66.66"));
+        verify(playerMock, times(1)).sendMessage(contains("Unable to parse argument: 66.66"));
     }
 
     @Test
@@ -174,7 +173,7 @@ public class SmokeCommandTest {
         argsList.forEach(args -> smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args));
 
         // THEN
-        verify(playerMock, times(argsList.size())).sendMessage(contains("Unknown Argument"));
+        verify(playerMock, times(argsList.size())).sendMessage(contains(LanguageLoader.getMessage("messages.errors.unknown-arguments").replace("{argument}", "")));
     }
 
     @Test
@@ -184,6 +183,6 @@ public class SmokeCommandTest {
         // WHEN
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
         // THEN
-        verify(playerMock, times(1)).sendMessage(contains(UNKNOWN_ARGUMENTS_LENGTH.formatted(args.length)));
+        verify(playerMock, times(1)).sendMessage(contains(LanguageLoader.getMessage("messages.errors.unknown-arguments-length").replace("{arguments_length}", String.valueOf(args.length))));
     }
 }

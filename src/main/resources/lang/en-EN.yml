@@ -1,0 +1,27 @@
+messages:
+  errors:
+    insufficient-permission: "Sorry, you don't have permission to execute this command"
+    unknown-arguments: "Unknown Argument: {argument}"
+    unknown-arguments-length: "Unknown argument length: {arguments_length}"
+    argument-not-parseable: "Unable to parse argument: {argument}"
+    console-not-supported: "Sorry. Command can only be used in-game"
+    frequency-less-equal-zero: "Spawn-Frequency must not be < 1"
+    not-looking-at-block: "Must be looking at a block close-by"
+    input-argument-null: "Input argument is null!"
+    smoke-id-not-unique: "No unique location found for Id: {id}"
+  smoke:
+    placed-success: "Placed smoke ({id}) at [{x}, {y}, {z}]. Spawn-Frequency: {frequency}"
+    list-all-world: "Listing all smokes of world {world}:"
+    list-all: "Listing all smokes:"
+    list-info-item: "Smoke ({id}) - at [{x}, {y}, {z}]. Spawn-Frequency: {frequency}"
+    delete-success: "Deleted smoke: {id}"
+    delete-all: "Deleted all smokes"
+    delete-all-world: "Deleted all smokes in world {world}"
+    help: |
+      -- Smoke Help --
+      /smoke - create new smoke at target location
+      /smoke add (frequency in server-ticks) - create new smoke at target location with custom spawn-frequency
+      /smoke list [world] - list all smokes [in world]
+      /smoke remove (id) - remove smoke with id
+      /smoke remove all [world] - remove all smokes [in world]
+      -- [] - optional args, () - required args --

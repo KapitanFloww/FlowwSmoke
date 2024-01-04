@@ -3,11 +3,13 @@ package de.flowwindustries.flowwsmoke;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import de.flowwindustries.flowwsmoke.commands.SmokeCommand;
+import de.flowwindustries.flowwsmoke.lang.LanguageLoader;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
-import de.flowwindustries.flowwsmoke.service.impl.SmokeTaskServiceImpl;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationIOJsonServiceImpl;
 import de.flowwindustries.flowwsmoke.service.impl.SmokeLocationServiceImpl;
+import de.flowwindustries.flowwsmoke.service.impl.SmokeTaskServiceImpl;
+import de.flowwindustries.flowwsmoke.utils.JarUtil;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
@@ -16,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -25,7 +28,6 @@ import java.util.function.Consumer;
 public final class FlowwSmoke extends JavaPlugin {
 
     public static String pluginPrefix;
-    public static String messagesInsufficientPermissions;
     private static final String SMOKE_PERMISSION = "floww.smoke";
 
     @Getter
@@ -43,11 +45,18 @@ public final class FlowwSmoke extends JavaPlugin {
 
         // Always save default configuration if not exists
         saveDefaultConfig();
+        saveLanguages();
 
         // Load configuration
         configuration = new SmokeConfiguration(getConfig());
         pluginPrefix = configuration.getPrefix();
-        messagesInsufficientPermissions = configuration.getInsufficientPermissionsMessage();
+
+        // Load Translations
+        final String lang = configuration.getLanguage();
+        final Path langFile = Paths.get(getDataFolder().getPath(), "lang", lang);
+        LanguageLoader.init(langFile);
+
+
 
 
         try {
@@ -60,6 +69,14 @@ public final class FlowwSmoke extends JavaPlugin {
 
         String pluginVersion = instance.getDescription().getVersion();
         log.info("Initialization complete. Running version: " + pluginVersion);
+    }
+
+    private void saveLanguages() {
+        try {
+            JarUtil.copyFolderFromJar("lang", getDataFolder(), JarUtil.CopyOption.COPY_IF_NOT_EXIST);
+        } catch (Exception ex) {
+            log.severe("Could not save language files: " + ex);
+        }
     }
 
     @Override

@@ -24,8 +24,8 @@ public class SmokeConfiguration {
         return fileConfiguration.getString("prefix");
     }
 
-    public String getInsufficientPermissionsMessage() {
-        return fileConfiguration.getString("messages.insufficient-permission");
+    public String getLanguage() {
+        return fileConfiguration.getString("lang");
     }
 
     public int getFallbackFrequency() {

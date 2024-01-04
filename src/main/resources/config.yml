@@ -8,7 +8,6 @@
 # Specifies the ingame-prefix of messages sent by this plugin
 prefix: "§7[§aFloww§4Smoke§7] "
 
-fallback-poll-frequency: 7 # Default: 7. The fallback frequency in server-ticks to use for particle spawning if not specified other.
+lang: en-EN.yml
 
-messages:
-  insufficient-permission: "Sorry, you don't have permission to execute this command"
+fallback-poll-frequency: 7 # Default: 7. The fallback frequency in server-ticks to use for particle spawning if not specified other.

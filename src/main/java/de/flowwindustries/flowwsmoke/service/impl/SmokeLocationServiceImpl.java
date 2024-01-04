@@ -2,6 +2,7 @@ package de.flowwindustries.flowwsmoke.service.impl;
 
 import com.google.common.base.Strings;
 import de.flowwindustries.flowwsmoke.domain.SmokeLocation;
+import de.flowwindustries.flowwsmoke.lang.LanguageLoader;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import lombok.extern.java.Log;
@@ -54,7 +55,7 @@ public class SmokeLocationServiceImpl implements SmokeLocationService {
             return null;
         }
         if(results.size() != 1) {
-            throw new IllegalStateException("Ambiguous smoke locations for id %s found".formatted(id));
+            throw new IllegalStateException(LanguageLoader.getMessage("messages.errors.smoke-id-not-unique").replace("{id}", String.valueOf(id)));
         }
         return results.get(0);
     }

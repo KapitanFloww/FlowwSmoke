@@ -1,0 +1,27 @@
+messages:
+  errors:
+    insufficient-permission: "Du hast keine Berechtigung diesen Befehl auszuführen"
+    unknown-arguments: "Unbekanntes Argument: {argument}"
+    unknown-arguments-length: "Unbekannte Argument Länge: {arguments_length}"
+    argument-not-parseable: "Argument kann nicht ausgewertet werden: {argument}"
+    console-not-supported: "Dieser Befehl kann nur ingame ausgeführt werden"
+    frequency-less-equal-zero: "Spawn-Frequenz darf nicht < 1 sein"
+    not-looking-at-block: "Du musst einen Block in der Nähe betrachten"
+    input-argument-null: "Eingabe ist null"
+    smoke-id-not-unique: "Keine eindeutigen Rauch-Ort gefunden mit Id: {id}"
+  smoke:
+    placed-success: "Rauch-Ort ({id}) bei [{x}, {y}, {z}] platziert. Spawn-Frequenz: {frequency}"
+    list-all-world: "Zeige all Rauch-Orte in Welt {world}:"
+    list-all: "Zeige all Rauch-Orte:"
+    list-info-item: "Rauch-Ort ({id}) - bei [{x}, {y}, {z}]. Spawn-Frequenz: {frequency}"
+    delete-success: "Rauch-Ort gelöscht: {id}"
+    delete-all: "Alle Rauch-Orte gelöscht"
+    delete-all-world: "Alle Rauch-Orte in Welt {world} gelöscht"
+    help: |
+      -- Smoke Hilfe --
+      /smoke - neuen Rauch am Zielort erzeugen
+      /smoke add (frequency in server-ticks) - neuen Rauch am Zielort mit benutzerdefinierter Spawn-Häufigkeit erzeugen
+      /smoke list [world] - alle Rauche-Orte anzeigen [in Welt]
+      /smoke remove (id) - Rauch-Ort mit Id löschen
+      /smoke remove all [world] - alle Rauch-Orte löschen [in Welt]
+      -- [] - optionale Argumente, () - benötigte Argumente --

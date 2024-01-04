@@ -1,5 +1,6 @@
 package de.flowwindustries.flowwsmoke.utils.parsing;
 
+import de.flowwindustries.flowwsmoke.lang.LanguageLoader;
 import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -22,8 +23,8 @@ import static de.flowwindustries.flowwsmoke.FlowwSmoke.pluginPrefix;
 @Log
 public class SpigotStringParser {
 
-    private static final String PARSE_ERROR = "Unable to parse";
-    private static final String PARAMETER_NULL = "Input parameter is null";
+    private static final String PARSE_ERROR = LanguageLoader.getMessage("messages.errors.argument-not-parseable");
+    private static final String PARAMETER_NULL = LanguageLoader.getMessage("messages.errors.input-argument-null");
 
     /**
      * Parse the given {@link String} to an <strong>online</strong> {@link Player}.
@@ -38,7 +39,7 @@ public class SpigotStringParser {
 
         log.config(pluginPrefix + "Trying to parse player: " + playerName);
         Optional<Player> optionalPlayer = Optional.ofNullable(Bukkit.getPlayer(playerName));
-        return optionalPlayer.orElseThrow(() -> new IllegalArgumentException(String.format("%s: %s", PARSE_ERROR, playerName)));
+        return optionalPlayer.orElseThrow(() -> new IllegalArgumentException(PARSE_ERROR.replace("{argument}", playerName)));
     }
 
     /**
@@ -54,7 +55,7 @@ public class SpigotStringParser {
 
         log.config(pluginPrefix + "Trying to parse world: " + worldName);
         Optional<World> optionalWorld = Optional.ofNullable(Bukkit.getWorld(worldName));
-        return optionalWorld.orElseThrow(() -> new IllegalArgumentException(String.format("%s: %s", PARSE_ERROR, worldName)));
+        return optionalWorld.orElseThrow(() -> new IllegalArgumentException(PARSE_ERROR.replace("{argument}", worldName)));
     }
 
     /**
@@ -72,7 +73,7 @@ public class SpigotStringParser {
         try {
             return Integer.parseInt(integerString);
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException(String.format("%s: %s", PARSE_ERROR, integerString));
+            throw new IllegalArgumentException(PARSE_ERROR.replace("{argument}", integerString));
         }
     }
 
@@ -91,7 +92,7 @@ public class SpigotStringParser {
         try {
             return Double.parseDouble(doubleString);
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException(String.format("%s: %s", PARSE_ERROR, doubleString));
+            throw new IllegalArgumentException(PARSE_ERROR.replace("{argument}", doubleString));
         }
     }
 
@@ -110,7 +111,7 @@ public class SpigotStringParser {
         try {
             return Float.parseFloat(floatString);
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException(String.format("%s: %s", PARSE_ERROR, floatString));
+            throw new IllegalArgumentException(PARSE_ERROR.replace("{argument}", floatString));
         }
     }
 }
