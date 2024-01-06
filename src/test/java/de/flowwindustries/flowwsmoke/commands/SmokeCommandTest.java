@@ -179,7 +179,7 @@ public class SmokeCommandTest {
     @Test
     void verifyUnknownNumberOfArgs() {
         // GIVEN
-        var args = new String[]{"help", "me", "please", "lorem", "ipsum"};
+        var args = new String[]{"help", "me", "please", "lorem", "ipsum", "fizz"};
         // WHEN
         smokeCommand.onCommand(playerMock, commandMock, LABEL_MOCK, args);
         // THEN

@@ -97,7 +97,7 @@ public class SmokeLocationIOServiceTest {
 
     private static List<SmokeLocation> getLocationsList() {
         List<SmokeLocation> locations = new ArrayList<>();
-        locations.add(new SmokeLocation(DUMMY_ID, DUMMY_WORLD, DUMMY_X, DUMMY_Y, DUMMY_Z, DUMMY_FREQUENCY));
+        locations.add(new SmokeLocation(DUMMY_ID, DUMMY_WORLD, DUMMY_X, DUMMY_Y, DUMMY_Z, 0.0, 0.0, 0.0, DUMMY_FREQUENCY));
         return locations;
     }
 

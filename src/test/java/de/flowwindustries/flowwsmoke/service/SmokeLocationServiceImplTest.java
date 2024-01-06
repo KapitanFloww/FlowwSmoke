@@ -27,7 +27,7 @@ public class SmokeLocationServiceImplTest {
 
     public SmokeLocationServiceImplTest() {
         this.smokeLocationIOService = mock(SmokeLocationIOService.class);
-        this.smokeLocationService = new SmokeLocationServiceImpl(this.smokeLocationIOService, new SmokeTaskServiceImpl(new TestBukkitScheduler()));
+        this.smokeLocationService = new SmokeLocationServiceImpl(this.smokeLocationIOService, new SmokeTaskServiceImpl(new TestBukkitScheduler(), 0.0));
     }
 
     @Test

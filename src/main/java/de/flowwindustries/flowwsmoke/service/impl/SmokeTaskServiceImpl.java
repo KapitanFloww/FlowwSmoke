@@ -14,16 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Log
 public class SmokeTaskServiceImpl implements SmokeTaskService {
 
+    private final double spawnDeviation;
     private final BukkitScheduler scheduler;
     private final Map<SmokeLocation, Integer> scheduledTaskLocations = new ConcurrentHashMap<>();
 
-    public SmokeTaskServiceImpl(BukkitScheduler scheduler) {
+    public SmokeTaskServiceImpl(BukkitScheduler scheduler, double spawnDeviation) {
         this.scheduler = Objects.requireNonNull(scheduler);
+        this.spawnDeviation = spawnDeviation;
     }
 
     @Override
     public void scheduleSmokeTask(final SmokeLocation smokeLocation) {
-        final var task = new SpawnSmokeTask(smokeLocation);
+        final var task = new SpawnSmokeTask(spawnDeviation, smokeLocation);
         final int taskId = scheduler.scheduleSyncRepeatingTask(
                 FlowwSmoke.getInstance(),
                 task,

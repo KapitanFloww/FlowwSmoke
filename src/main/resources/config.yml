@@ -11,3 +11,4 @@ prefix: "§7[§aFloww§4Smoke§7] "
 lang: en-EN.yml
 
 fallback-poll-frequency: 7 # Default: 7. The fallback frequency in server-ticks to use for particle spawning if not specified other.
+allowed-spawn-deviation: 1.5 # Default 1.5. Only values >= 0 permitted. Decreasing this value will place smoke particles closer to each other.

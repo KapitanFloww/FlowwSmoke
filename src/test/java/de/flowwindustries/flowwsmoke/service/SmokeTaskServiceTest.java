@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class SmokeTaskServiceTest {
 
     private final BukkitScheduler scheduler = new TestBukkitScheduler();
-    private final SmokeTaskService smokeTaskService = new SmokeTaskServiceImpl(scheduler);
+    private final SmokeTaskService smokeTaskService = new SmokeTaskServiceImpl(scheduler, 0.0);
 
     @BeforeEach
     @AfterEach
