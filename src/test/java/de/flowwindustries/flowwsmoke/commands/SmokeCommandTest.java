@@ -38,7 +38,7 @@ public class SmokeCommandTest {
     private final SmokeLocationService locationServiceMock = mock(SmokeLocationService.class);
 
     // Unit-under-test
-    private final SmokeCommand smokeCommand = new SmokeCommand("test.smoke", locationServiceMock, DUMMY_FREQUENCY);
+    private final SmokeCommand smokeCommand = new SmokeCommand("test.smoke", locationServiceMock, DUMMY_FREQUENCY, "[FlowwSmoke]");
 
     @BeforeEach
     void setUp() {

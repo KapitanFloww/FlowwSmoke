@@ -17,6 +17,7 @@ messages:
     delete-success: "Rauch-Ort gelöscht: {id}"
     delete-all: "Alle Rauch-Orte gelöscht"
     delete-all-world: "Alle Rauch-Orte in Welt {world} gelöscht"
+    teleport: "Klicken um zum Rauch zu springen"
     help: |
       -- Smoke Hilfe --
       /smoke - neuen Rauch am Zielort erzeugen

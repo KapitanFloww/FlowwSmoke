@@ -6,6 +6,11 @@ import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
 import de.flowwindustries.flowwsmoke.utils.messages.PlayerMessage;
 import de.flowwindustries.flowwsmoke.utils.parsing.SpigotStringParser;
 import lombok.extern.java.Log;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,11 +34,13 @@ public class SmokeCommand implements CommandExecutor {
     private final SmokeLocationService smokeLocationService;
     private final Integer fallbackFrequency;
     private final String permission;
+    private final String prefix;
 
-    public SmokeCommand(String permission, SmokeLocationService smokeLocationService, Integer fallbackFrequency) {
+    public SmokeCommand(String permission, SmokeLocationService smokeLocationService, Integer fallbackFrequency, String prefix) {
         this.permission = Objects.requireNonNull(permission);
         this.smokeLocationService = Objects.requireNonNull(smokeLocationService);
         this.fallbackFrequency = Objects.requireNonNull(fallbackFrequency);
+        this.prefix = Objects.requireNonNull(prefix);
     }
 
     @Override
@@ -160,16 +167,20 @@ public class SmokeCommand implements CommandExecutor {
         } else {
             PlayerMessage.info(LanguageLoader.getMessage("messages.smoke.list-all-world").replace("{world}", worldName), player);
         }
-        smokeLocationService.getAll(worldName).forEach(location ->
-                PlayerMessage.success(LanguageLoader.getMessage("messages.smoke.list-info-item")
-                                .replace("{id}", String.valueOf(location.getId()))
-                                .replace("{x}", String.valueOf(location.getX()))
-                                .replace("{y}", String.valueOf(location.getY()))
-                                .replace("{z}", String.valueOf(location.getZ()))
-                                .replace("{frequency}", String.valueOf(location.getFrequency()))
-                                .replace("{customOffset}", String.valueOf(hasCustomOffset(location))),
-                        player)
-        );
+        smokeLocationService.getAll(worldName).forEach(location -> {
+            final String message = LanguageLoader.getMessage("messages.smoke.list-info-item")
+                    .replace("{id}", String.valueOf(location.getId()))
+                    .replace("{x}", String.valueOf(location.getX()))
+                    .replace("{y}", String.valueOf(location.getY()))
+                    .replace("{z}", String.valueOf(location.getZ()))
+                    .replace("{frequency}", String.valueOf(location.getFrequency()))
+                    .replace("{customOffset}", String.valueOf(hasCustomOffset(location)));
+            final String formattedMessages = prefix + ChatColor.GREEN + message;
+            final TextComponent component = new TextComponent(formattedMessages);
+            component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LanguageLoader.getMessage("messages.smoke.teleport"))));
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp %s %s %s".formatted(location.getX(), location.getY(), location.getZ())));
+            player.spigot().sendMessage(component);
+        });
     }
 
     private void executeRemoveSmoke(Player player, Integer id) {

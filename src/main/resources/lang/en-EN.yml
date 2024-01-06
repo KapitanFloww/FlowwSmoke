@@ -17,6 +17,7 @@ messages:
     delete-success: "Deleted smoke: {id}"
     delete-all: "Deleted all smokes"
     delete-all-world: "Deleted all smokes in world {world}"
+    teleport: "Click to teleport"
     help: |
       -- Smoke Help --
       /smoke - create new smoke at target location

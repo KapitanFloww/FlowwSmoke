@@ -56,9 +56,6 @@ public final class FlowwSmoke extends JavaPlugin {
         final Path langFile = Paths.get(getDataFolder().getPath(), "lang", lang);
         LanguageLoader.init(langFile);
 
-
-
-
         try {
             setupServices();
         } catch (IOException ex) {
@@ -116,6 +113,6 @@ public final class FlowwSmoke extends JavaPlugin {
     }
 
     private void setupCommands() {
-        Objects.requireNonNull(getCommand("smoke")).setExecutor(new SmokeCommand(SMOKE_PERMISSION, this.smokeLocationService, getConfiguration().getFallbackFrequency()));
+        Objects.requireNonNull(getCommand("smoke")).setExecutor(new SmokeCommand(SMOKE_PERMISSION, this.smokeLocationService, getConfiguration().getFallbackFrequency(), getConfiguration().getPrefix()));
     }
 }
