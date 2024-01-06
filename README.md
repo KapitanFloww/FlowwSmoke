@@ -1,6 +1,6 @@
 # FlowwSmoke
 
-![](https://img.shields.io/badge/Version-1.3.0-lightgrey?style=for-the-badge)
+![](https://img.shields.io/badge/Version-1.4.0-lightgrey?style=for-the-badge)
 ![](https://img.shields.io/badge/Minecraft-1.20.4-brightgreengreen?style=for-the-badge)
 ![](https://img.shields.io/badge/Java-17-green?style=for-the-badge)
 [![GitHub Releases](https://img.shields.io/badge/Github-Releases-yellowgreen?style=for-the-badge)](https://github.com/KapitanFloww/FlowwSmoke/releases)
@@ -33,14 +33,15 @@ Then, simply copy the `FlowwSmoke-*.jar` from the `/target`-folder to your serve
 
 The following commands are available in-game:
 
-| Command                     | Permission    | Description                                                                         |
-|-----------------------------|---------------|-------------------------------------------------------------------------------------|
-| `/smoke`                    | `floww.smoke` | Place a new smoke location at your current target block                             |
-| `/smoke add (frequency)`    | `floww.smoke` | Place a new smoke location at your current target block with custom spawn-frequency |
-| `/smoke help`               | `floww.smoke` | Open a help page                                                                    |
-| `/smoke list [world]`       | `floww.smoke` | List all smokes [of given world]                                                    |
-| `/smoke remove (id)`        | `floww.smoke` | Remove smoke location with given id                                                 |
-| `/smoke remove all [world]` | `floww.smoke` | Remove all smokes locations [of given world]                                        |
+| Command                                                | Permission    | Description                                                                                    |
+|--------------------------------------------------------|---------------|------------------------------------------------------------------------------------------------|
+| `/smoke`                                               | `floww.smoke` | Place a new smoke location at your current target block                                        |
+| `/smoke add (frequency)`                               | `floww.smoke` | Place a new smoke location at your current target block with custom spawn-frequency            |
+| `/smoke add (frequency) (offsetX) (offsetY) (offsetZ)` | `floww.smoke` | Place a new smoke location at your current target block with custom spawn-frequency and offset |
+| `/smoke help`                                          | `floww.smoke` | Open a help page                                                                               |
+| `/smoke list [world]`                                  | `floww.smoke` | List all smokes [of given world]                                                               |
+| `/smoke remove (id)`                                   | `floww.smoke` | Remove smoke location with given id                                                            |
+| `/smoke remove all [world]`                            | `floww.smoke` | Remove all smokes locations [of given world]                                                   |
 
 > `()`-args are **required**, while `[]`-args are optional :mag_right:
 
