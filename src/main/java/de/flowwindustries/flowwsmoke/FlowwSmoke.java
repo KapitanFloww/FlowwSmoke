@@ -39,6 +39,10 @@ public final class FlowwSmoke extends JavaPlugin {
     private SmokeLocationIOService smokeLocationIOService;
     private SmokeTaskServiceImpl smokeTaskService;
 
+
+    private final Consumer<Runnable> persistTaskExecutor =
+            runnable -> Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
+
     @Override
     public void onEnable() {
         instance = this;
@@ -68,14 +72,6 @@ public final class FlowwSmoke extends JavaPlugin {
         log.info("Initialization complete. Running version: " + pluginVersion);
     }
 
-    private void saveLanguages() {
-        try {
-            JarUtil.copyFolderFromJar("lang", getDataFolder(), JarUtil.CopyOption.COPY_IF_NOT_EXIST);
-        } catch (Exception ex) {
-            log.severe("Could not save language files: " + ex);
-        }
-    }
-
     @Override
     public void onDisable() {
         log.info("Shutting down plugin");
@@ -83,9 +79,6 @@ public final class FlowwSmoke extends JavaPlugin {
         log.config("Cancelling all scheduled tasks");
         smokeTaskService.cancelAll();
     }
-
-    private final Consumer<Runnable> persistTaskExecutor =
-            runnable -> Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
 
     private void setupServices() throws IOException {
         final var mapper = new ObjectMapper();
@@ -114,5 +107,13 @@ public final class FlowwSmoke extends JavaPlugin {
 
     private void setupCommands() {
         Objects.requireNonNull(getCommand("smoke")).setExecutor(new SmokeCommand(SMOKE_PERMISSION, this.smokeLocationService, getConfiguration().getFallbackFrequency(), getConfiguration().getPrefix()));
+    }
+
+    private void saveLanguages() {
+        try {
+            JarUtil.copyFolderFromJar("lang", getDataFolder(), JarUtil.CopyOption.COPY_IF_NOT_EXIST);
+        } catch (Exception ex) {
+            log.severe("Could not save language files: " + ex);
+        }
     }
 }
