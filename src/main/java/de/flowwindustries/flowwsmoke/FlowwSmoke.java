@@ -3,6 +3,7 @@ package de.flowwindustries.flowwsmoke;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import de.flowwindustries.flowwsmoke.commands.SmokeCommand;
+import de.flowwindustries.flowwsmoke.commands.SmokeCommandTabCompleter;
 import de.flowwindustries.flowwsmoke.lang.LanguageLoader;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationIOService;
 import de.flowwindustries.flowwsmoke.service.SmokeLocationService;
@@ -106,7 +107,9 @@ public final class FlowwSmoke extends JavaPlugin {
     }
 
     private void setupCommands() {
-        Objects.requireNonNull(getCommand("smoke")).setExecutor(new SmokeCommand(SMOKE_PERMISSION, this.smokeLocationService, getConfiguration().getFallbackFrequency(), getConfiguration().getPrefix()));
+        final var command = Objects.requireNonNull(getCommand("smoke"));
+        command.setExecutor(new SmokeCommand(SMOKE_PERMISSION, this.smokeLocationService, getConfiguration().getFallbackFrequency(), getConfiguration().getPrefix()));
+        command.setTabCompleter(new SmokeCommandTabCompleter(smokeLocationService));
     }
 
     private void saveLanguages() {

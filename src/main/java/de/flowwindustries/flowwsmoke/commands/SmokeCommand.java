@@ -67,6 +67,7 @@ public class SmokeCommand implements CommandExecutor {
                 switch (args[0].toLowerCase(Locale.getDefault())) {
                     case "help" -> executeHelp(player); // smoke help
                     case "list" -> executeListAll(player, null); // smoke list
+                    case "add" -> executeSmokeCreation(player); // smoke add
                     default -> throw new IllegalArgumentException(LanguageLoader.getMessage("messages.errors.unknown-arguments").replace("{argument}", args[0]));
                 }
             }
